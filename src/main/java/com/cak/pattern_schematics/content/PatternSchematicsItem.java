@@ -1,6 +1,6 @@
-package com.cak.pattern_schematics;
+package com.cak.pattern_schematics.content;
 
-import com.simibubi.create.AllItems;
+import com.cak.pattern_schematics.PatternSchematics;
 import com.simibubi.create.content.schematics.SchematicItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderGetter;
@@ -11,9 +11,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 
-public class PatternSchematicItem extends SchematicItem {
+public class PatternSchematicsItem extends SchematicItem {
   
-  public PatternSchematicItem(Properties properties) {
+  public PatternSchematicsItem(Properties properties) {
     super(properties);
   }
   
