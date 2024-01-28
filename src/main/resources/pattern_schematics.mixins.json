@@ -7,6 +7,7 @@
   "mixins": [
     "SchematicTableBlockEntityMixin",
     "SchematicTableMenuMixin",
+    "SchematicToolBaseMixin",
     "ServerSchematicLoaderMixin"
   ],
   "client": [

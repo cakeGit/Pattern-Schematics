@@ -39,8 +39,11 @@ public class SchematicTableMenuMixin extends MenuBase<SchematicTableBlockEntity>
     ((SchematicTableMenuMixinAccessor) instance).setInputSlot(new SlotItemHandler(contentHolder.inventory, 0, 21, 57) {
       @Override
       public boolean mayPlace(ItemStack stack) {
-        return AllItems.EMPTY_SCHEMATIC.isIn(stack) || AllItems.SCHEMATIC_AND_QUILL.isIn(stack)
-            || AllItems.SCHEMATIC.isIn(stack) || PatternSchematics.EMPTY_PATTERN_SCHEMATIC.isIn(stack);
+        return AllItems.EMPTY_SCHEMATIC.isIn(stack)
+            || AllItems.SCHEMATIC_AND_QUILL.isIn(stack)
+            || AllItems.SCHEMATIC.isIn(stack)
+            || PatternSchematics.EMPTY_PATTERN_SCHEMATIC.isIn(stack)
+            || PatternSchematics.PATTERN_SCHEMATIC.isIn(stack);
       }
     });
   }
