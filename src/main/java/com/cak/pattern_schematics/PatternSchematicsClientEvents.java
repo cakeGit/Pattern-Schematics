@@ -1,10 +1,14 @@
 package com.cak.pattern_schematics;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.content.contraptions.elevator.ElevatorControlsHandler;
 import com.simibubi.create.content.trains.TrainHUD;
 import com.simibubi.create.foundation.render.SuperRenderTypeBuffer;
+import com.simibubi.create.foundation.utility.AnimationTickHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
@@ -26,15 +30,21 @@ public class PatternSchematicsClientEvents {
   
   @SubscribeEvent
   public static void onRenderWorld(RenderLevelStageEvent event) {
-    PatternSchematicsClient.PATTERN_SCHEMATIC_HANDLER.render(
-        event.getPoseStack(), SuperRenderTypeBuffer.getInstance(),
-        Minecraft.getInstance().gameRenderer.getMainCamera().getPosition()
-    );
-  }
+    if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES)
+      return;
   
-  @SubscribeEvent
-  public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
-    event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "pattern_schematic", PatternSchematicsClient.PATTERN_SCHEMATIC_HANDLER);
+    PoseStack ms = event.getPoseStack();
+    ms.pushPose();
+    SuperRenderTypeBuffer buffer = SuperRenderTypeBuffer.getInstance();
+    float partialTicks = AnimationTickHolder.getPartialTicks();
+    Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera()
+        .getPosition();
+    
+    PatternSchematicsClient.PATTERN_SCHEMATIC_HANDLER.render(ms, buffer, camera);
+    
+    buffer.draw();
+    RenderSystem.enableCull();
+    ms.popPose();
   }
   
   @SubscribeEvent
@@ -63,6 +73,16 @@ public class PatternSchematicsClientEvents {
     
     if (PatternSchematicsClient.PATTERN_SCHEMATIC_HANDLER.onMouseInput(button, pressed))
       event.setCanceled(true);
+  }
+  
+  @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+  public static class ModBusEvents {
+    
+    @SubscribeEvent
+    public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
+      event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "pattern_schematic", PatternSchematicsClient.PATTERN_SCHEMATIC_HANDLER);
+    }
+    
   }
   
 }
