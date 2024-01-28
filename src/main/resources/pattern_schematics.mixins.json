@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.cak.pattern_schematics.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "pattern_schematics.refmap.json",
+  "mixins": [
+    "SchematicTableBlockEntityMixin",
+    "SchematicTableMenuMixin",
+    "ServerSchematicLoaderMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
