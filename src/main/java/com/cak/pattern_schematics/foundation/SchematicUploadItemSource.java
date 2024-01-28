@@ -1,6 +1,6 @@
 package com.cak.pattern_schematics.foundation;
 
-import com.cak.pattern_schematics.PatternSchematicItem;
+import com.cak.pattern_schematics.content.PatternSchematicsItem;
 import com.cak.pattern_schematics.PatternSchematics;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.schematics.SchematicItem;
@@ -11,18 +11,26 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 import java.util.Arrays;
+import java.util.List;
 
 public enum SchematicUploadItemSource {
   
-  DEFAULT(SchematicItem::create, 0, AllItems.EMPTY_SCHEMATIC),
-  PATTERN(PatternSchematicItem::create, 1, PatternSchematics.EMPTY_PATTERN_SCHEMATIC)
+  DEFAULT(SchematicItem::create, 0, List.of(
+      AllItems.EMPTY_SCHEMATIC,
+      AllItems.SCHEMATIC_AND_QUILL,
+      AllItems.SCHEMATIC
+  ) ),
+  PATTERN(PatternSchematicsItem::create, 1, List.of(
+      PatternSchematics.EMPTY_PATTERN_SCHEMATIC,
+      PatternSchematics.PATTERN_SCHEMATIC
+  ))
   ;
   
   final SchematicItemFactory factory;
   final int nbtValue;
-  final ItemEntry<Item> schematicSourceItem;
+  final List<ItemEntry<? extends Item>> schematicSourceItem;
   
-  SchematicUploadItemSource(SchematicItemFactory factory, int nbtValue, ItemEntry<Item> schematicSourceItem) {
+  SchematicUploadItemSource(SchematicItemFactory factory, int nbtValue, List<ItemEntry<? extends Item>> schematicSourceItem) {
     this.factory = factory;
     this.nbtValue = nbtValue;
     this.schematicSourceItem = schematicSourceItem;
@@ -36,13 +44,14 @@ public enum SchematicUploadItemSource {
     return nbtValue;
   }
   
-  public ItemEntry<Item> getSchematicSourceItem() {
+  public List<ItemEntry<? extends Item>> getSchematicSourceItems() {
     return schematicSourceItem;
   }
   
   public static SchematicUploadItemSource tryFromItemStack(ItemStack stack) {
     return Arrays.stream(values())
-        .filter(source -> source.getSchematicSourceItem().isIn(stack))
+        .filter(source -> source.getSchematicSourceItems()
+            .stream().anyMatch(sourceItem -> sourceItem.isIn(stack)))
         .findAny().orElse(null);
   }
   
