@@ -1,5 +1,6 @@
 package com.cak.pattern_schematics;
 
+import com.cak.pattern_schematics.content.PatternSchematicsItem;
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.AllCreativeModeTabs;
 import com.simibubi.create.Create;
@@ -25,8 +26,8 @@ public class PatternSchematics
         .tab(AllCreativeModeTabs.BASE_CREATIVE_TAB.getKey())
         .register();
     
-    public static final ItemEntry<PatternSchematicItem> PATTERN_SCHEMATIC = Create.REGISTRATE
-        .item("pattern_schematic", PatternSchematicItem::new)
+    public static final ItemEntry<PatternSchematicsItem> PATTERN_SCHEMATIC = Create.REGISTRATE
+        .item("pattern_schematic", PatternSchematicsItem::new)
         .properties(p -> p.stacksTo(1))
         //.tab(AllCreativeModeTabs.BASE_CREATIVE_TAB.getKey())
         .register();
