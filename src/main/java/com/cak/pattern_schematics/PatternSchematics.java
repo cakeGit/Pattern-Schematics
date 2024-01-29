@@ -20,6 +20,7 @@ public class PatternSchematics
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     
+    //Todo: separate register for crediting
     public static final ItemEntry<Item> EMPTY_PATTERN_SCHEMATIC = Create.REGISTRATE
         .item("empty_pattern_schematic", Item::new)
         .properties(p -> p.stacksTo(1))
