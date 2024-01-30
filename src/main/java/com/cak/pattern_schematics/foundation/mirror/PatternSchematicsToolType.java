@@ -1,4 +1,4 @@
-package com.cak.pattern_schematics.foundation;
+package com.cak.pattern_schematics.foundation.mirror;
 
 
 import com.simibubi.create.content.schematics.client.tools.*;
@@ -19,7 +19,8 @@ public enum PatternSchematicsToolType {
   MOVE_Y(new MoveVerticalTool(), AllIcons.I_TOOL_MOVE_Y),
   ROTATE(new RotateTool(), AllIcons.I_TOOL_ROTATE),
   FLIP(new FlipTool(), AllIcons.I_TOOL_MIRROR),
-  PRINT(new PlaceTool(), AllIcons.I_CONFIRM);
+  PRINT(new PlaceTool(), AllIcons.I_CONFIRM),
+  CLONE(new CloneTool(), AllIcons.I_CONFIRM);
   
   private ISchematicTool tool;
   private AllIcons icon;

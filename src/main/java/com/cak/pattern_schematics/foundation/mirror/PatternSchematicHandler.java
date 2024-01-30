@@ -1,7 +1,6 @@
 package com.cak.pattern_schematics.foundation.mirror;
 
 import com.cak.pattern_schematics.PatternSchematics;
-import com.cak.pattern_schematics.foundation.PatternSchematicsToolType;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.*;
@@ -10,7 +9,6 @@ import com.simibubi.create.content.schematics.SchematicInstances;
 import com.simibubi.create.content.schematics.SchematicItem;
 import com.simibubi.create.content.schematics.SchematicWorld;
 import com.simibubi.create.content.schematics.client.*;
-import com.simibubi.create.content.schematics.client.tools.ToolType;
 import com.simibubi.create.content.schematics.packet.SchematicPlacePacket;
 import com.simibubi.create.content.schematics.packet.SchematicSyncPacket;
 import com.simibubi.create.foundation.outliner.AABBOutline;
@@ -343,7 +341,7 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
     BlockPos anchor = BlockPos.ZERO;
     StructurePlaceSettings settings = SchematicItem.getSettings(blueprint);
     transformation = new SchematicTransformation();
-    
+    System.out.println(settings.getRotation());
     deployed = tag.getBoolean("Deployed");
     if (deployed)
       anchor = NbtUtils.readBlockPos(tag.getCompound("Anchor"));
