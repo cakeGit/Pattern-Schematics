@@ -1,5 +1,6 @@
 package com.cak.pattern_schematics.foundation.mirror;
 
+import com.cak.pattern_schematics.PatternSchematics;
 import com.cak.pattern_schematics.foundation.PatternSchematicsToolType;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -13,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -74,10 +76,11 @@ public class PatternSchematicsToolSelectionScreen extends Screen {
     matrixStack.translate(0, -yOffset, focused ? 100 : 0);
     
     AllGuiTextures gray = AllGuiTextures.HUD_BACKGROUND;
+    ResourceLocation patternSchematicsGray = PatternSchematics.asResource(gray.location.getPath());
     RenderSystem.enableBlend();
     RenderSystem.setShaderColor(1, 1, 1, focused ? 7 / 8f : 1 / 2f);
     
-    graphics.blit(gray.location, x - 15, y, gray.startX, gray.startY, w, h, gray.width, gray.height);
+    graphics.blit(patternSchematicsGray, x - 15, y, gray.startX, gray.startY, w, h, gray.width, gray.height);
     
     float toolTipAlpha = yOffset / 10;
     List<Component> toolTip = tools.get(selection)
@@ -85,8 +88,8 @@ public class PatternSchematicsToolSelectionScreen extends Screen {
     int stringAlphaComponent = ((int) (toolTipAlpha * 0xFF)) << 24;
     
     if (toolTipAlpha > 0.25f) {
-      RenderSystem.setShaderColor(.7f, .7f, .8f, toolTipAlpha);
-      graphics.blit(gray.location, x - 15, y + 33, gray.startX, gray.startY, w, h + 22, gray.width, gray.height);
+      RenderSystem.setShaderColor(.8f, .7f, .8f, toolTipAlpha);
+      graphics.blit(patternSchematicsGray, x - 15, y + 33, gray.startX, gray.startY, w, h + 22, gray.width, gray.height);
       RenderSystem.setShaderColor(1, 1, 1, 1);
       
       if (toolTip.size() > 0)

@@ -7,6 +7,7 @@ import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -41,6 +42,10 @@ public class PatternSchematics
     public PatternSchematics() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         REGISTRATE.registerEventListeners(modEventBus);
+    }
+    
+    public static ResourceLocation asResource(String loc) {
+        return new ResourceLocation(MODID, loc);
     }
     
 }
