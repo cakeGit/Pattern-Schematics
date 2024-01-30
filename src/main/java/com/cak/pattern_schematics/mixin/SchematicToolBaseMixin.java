@@ -5,6 +5,7 @@ import com.cak.pattern_schematics.foundation.PatternSchematicsToolType;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.content.schematics.client.SchematicHandler;
 import com.simibubi.create.content.schematics.client.tools.SchematicToolBase;
+import com.simibubi.create.foundation.outliner.AABBOutline;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,6 +24,12 @@ public class SchematicToolBaseMixin {
     schematicHandler =
         (PatternSchematicsToolType.isPatternSchematicTool((SchematicToolBase) (Object) this) ?
         PatternSchematicsClient.PATTERN_SCHEMATIC_HANDLER : CreateClient.SCHEMATIC_HANDLER);
+  }
+  
+  @Inject(method = "renderOnSchematic", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lcom/simibubi/create/foundation/outliner/Outline$OutlineParams;colored(I)Lcom/simibubi/create/foundation/outliner/Outline$OutlineParams;"))
+  public void renderOnSchematic(CallbackInfo ci) {
+    AABBOutline outline = schematicHandler.getOutline();
+    outline.getParams().colored(0xa586a5);
   }
   
 }

@@ -352,7 +352,7 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
     bounds = new AABB(0, 0, 0, size.getX(), size.getY(), size.getZ());
     outline = new AABBOutline(bounds);
     outline.getParams()
-        .colored(0x6886c5)
+        .colored(0xa586a5)
         .lineWidth(1 / 16f);
     transformation.init(anchor, settings, bounds);
   }
