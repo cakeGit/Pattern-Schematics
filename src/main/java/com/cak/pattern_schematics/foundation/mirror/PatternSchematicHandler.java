@@ -1,6 +1,7 @@
 package com.cak.pattern_schematics.foundation.mirror;
 
 import com.cak.pattern_schematics.PatternSchematics;
+import com.cak.pattern_schematics.content.PatternSchematicPackets;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.*;
@@ -326,7 +327,7 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
   public void sync() {
     if (activeSchematicItem == null)
       return;
-    AllPackets.getChannel().sendToServer(new SchematicSyncPacket(activeHotbarSlot, transformation.toSettings(),
+    PatternSchematicPackets.getChannel().sendToServer(new PatternSchematicSyncPacket(activeHotbarSlot, transformation.toSettings(),
         transformation.getAnchor(), deployed));
   }
   

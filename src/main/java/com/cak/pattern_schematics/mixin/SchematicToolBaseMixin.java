@@ -1,6 +1,7 @@
 package com.cak.pattern_schematics.mixin;
 
 import com.cak.pattern_schematics.PatternSchematicsClient;
+import com.cak.pattern_schematics.foundation.mirror.PatternSchematicHandler;
 import com.cak.pattern_schematics.foundation.mirror.PatternSchematicsToolType;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.content.schematics.client.SchematicHandler;
@@ -28,8 +29,10 @@ public class SchematicToolBaseMixin {
   
   @Inject(method = "renderOnSchematic", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lcom/simibubi/create/foundation/outliner/Outline$OutlineParams;colored(I)Lcom/simibubi/create/foundation/outliner/Outline$OutlineParams;"))
   public void renderOnSchematic(CallbackInfo ci) {
-    AABBOutline outline = schematicHandler.getOutline();
-    outline.getParams().colored(0xa586a5);
+    if (PatternSchematicHandler.class.isInstance(schematicHandler)) {
+      AABBOutline outline = schematicHandler.getOutline();
+      outline.getParams().colored(0xa586a5);
+    }
   }
   
 }
