@@ -44,6 +44,7 @@ public class PatternSchematics
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         REGISTRATE.registerEventListeners(modEventBus);
         PatternSchematicPackets.registerPackets();
+        PatternSchematicsLang.register();
     }
     
     public static ResourceLocation asResource(String loc) {

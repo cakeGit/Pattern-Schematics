@@ -1,6 +1,7 @@
 package com.cak.pattern_schematics.foundation.mirror;
 
 
+import com.cak.pattern_schematics.PatternSchematics;
 import com.cak.pattern_schematics.foundation.CloneTool;
 import com.simibubi.create.content.schematics.client.tools.*;
 import com.simibubi.create.foundation.gui.AllIcons;
@@ -21,14 +22,20 @@ public enum PatternSchematicsToolType {
   ROTATE(new RotateTool(), AllIcons.I_TOOL_ROTATE),
   FLIP(new FlipTool(), AllIcons.I_TOOL_MIRROR),
   PRINT(new PlaceTool(), AllIcons.I_CONFIRM),
-  CLONE(new CloneTool(), AllIcons.I_CONFIRM);
+  CLONE(new CloneTool(), AllIcons.I_CONFIRM, true);
   
-  private ISchematicTool tool;
-  private AllIcons icon;
+  ISchematicTool tool;
+  AllIcons icon;
+  boolean patternModId;
   
-  private PatternSchematicsToolType(ISchematicTool tool, AllIcons icon) {
+  PatternSchematicsToolType(ISchematicTool tool, AllIcons icon) {
+    this(tool, icon, false);
+  }
+  
+  PatternSchematicsToolType(ISchematicTool tool, AllIcons icon, boolean patternModId) {
     this.tool = tool;
     this.icon = icon;
+    this.patternModId = patternModId;
   }
   
   public ISchematicTool getTool() {
@@ -36,7 +43,8 @@ public enum PatternSchematicsToolType {
   }
   
   public MutableComponent getDisplayName() {
-    return Lang.translateDirect("schematic.tool." + Lang.asId(name()));
+    return (patternModId ? Component.translatable(PatternSchematics.MODID + "schematic.tool." + Lang.asId(name()))
+    : Lang.translateDirect("schematic.tool." + Lang.asId(name())));
   }
   
   public AllIcons getIcon() {
