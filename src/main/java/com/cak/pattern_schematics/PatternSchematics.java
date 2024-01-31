@@ -1,5 +1,6 @@
 package com.cak.pattern_schematics;
 
+import com.cak.pattern_schematics.content.PatternSchematicPackets;
 import com.cak.pattern_schematics.content.PatternSchematicsItem;
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.AllCreativeModeTabs;
@@ -42,6 +43,7 @@ public class PatternSchematics
     public PatternSchematics() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         REGISTRATE.registerEventListeners(modEventBus);
+        PatternSchematicPackets.registerPackets();
     }
     
     public static ResourceLocation asResource(String loc) {
