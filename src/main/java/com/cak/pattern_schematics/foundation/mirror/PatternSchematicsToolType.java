@@ -1,6 +1,7 @@
 package com.cak.pattern_schematics.foundation.mirror;
 
 
+import com.cak.pattern_schematics.foundation.CloneTool;
 import com.simibubi.create.content.schematics.client.tools.*;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.utility.Lang;
@@ -44,7 +45,7 @@ public enum PatternSchematicsToolType {
   
   public static List<PatternSchematicsToolType> getTools(boolean creative) {
     List<PatternSchematicsToolType> tools = new ArrayList<>();
-    Collections.addAll(tools, MOVE, MOVE_Y, DEPLOY, ROTATE, FLIP);
+    Collections.addAll(tools, MOVE, MOVE_Y, DEPLOY, ROTATE, FLIP, CLONE);
     if (creative)
       tools.add(PRINT);
     return tools;

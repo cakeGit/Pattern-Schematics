@@ -1,4 +1,4 @@
-package com.cak.pattern_schematics.foundation.mirror;
+package com.cak.pattern_schematics.foundation;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.schematics.client.tools.ISchematicTool;
