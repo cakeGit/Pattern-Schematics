@@ -68,6 +68,9 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
   private SchematicHotbarSlotOverlay overlay;
   private PatternSchematicsToolSelectionScreen selectionScreen;
   
+  private Vec3i cloneVectorMin = new Vec3i(0, 0, 0);
+  private Vec3i cloneVectorMax = new Vec3i(0, 0, 0);
+  
   public PatternSchematicHandler() {
     renderers = new Vector<>(3);
     for (int i = 0; i < renderers.capacity(); i++)
@@ -206,8 +209,10 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
     }
     
     ms.pushPose();
+    KaminoSchematicTransformation transformationCopy = new KaminoSchematicTransformation(transformation);
+
     transformation.applyTransformations(ms, camera);
-    
+  
     if (!renderers.isEmpty()) {
       float pt = AnimationTickHolder.getPartialTicks();
       boolean lr = transformation.getScaleLR()
@@ -224,12 +229,16 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
         renderers.get(0)
             .render(ms, buffer);
     }
-    
+  
     if (active)
       currentTool.getTool()
           .renderOnSchematic(ms, buffer);
-    
+  
     ms.popPose();
+    
+    for (int x = cloneVectorMin.getX(); x <= cloneVectorMax.getX(); x++) {
+
+    }
     
   }
   
@@ -402,6 +411,11 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
   
   public AABBOutline getOutline() {
     return outline;
+  }
+  
+  public void setCloneData(Vec3i min, Vec3i max) {
+    cloneVectorMin = min;
+    cloneVectorMax = max;
   }
   
 }
