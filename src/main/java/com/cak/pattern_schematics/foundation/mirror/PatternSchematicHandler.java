@@ -76,9 +76,11 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
   private SchematicHotbarSlotOverlay overlay;
   private PatternSchematicsToolSelectionScreen selectionScreen;
   
-  private Vec3i cloneScaleMin = new Vec3i(0, 0, 0);
-  private Vec3i cloneScaleMax = new Vec3i(0, 0, 0);
-  private Vec3i cloneOffset = new Vec3i(0, 0, 0);
+  Vec3i cloneScaleMin = new Vec3i(0, 0, 0);
+  Vec3i cloneScaleMax = new Vec3i(0, 0, 0);
+  Vec3i cloneOffset = new Vec3i(0, 0, 0);
+  boolean isRenderingMain;
+  boolean isRenderingMultiple;
   
   public PatternSchematicHandler() {
     renderers = new Vector<>(3);
@@ -209,30 +211,35 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
     boolean present = activeSchematicItem != null;
     if (!active && !present)
       return;
-    
+  
     if (active) {
+      isRenderingMultiple = false;
+      isRenderingMain = true;
       ms.pushPose();
       currentTool.getTool()
           .renderTool(ms, buffer, camera);
       ms.popPose();
     }
-  
+    
     Vec3 schematicSize = new Vec3(bounds.maxX, bounds.maxY, bounds.maxZ);
+    
+    isRenderingMultiple = !cloneScaleMax.equals(cloneScaleMin);
     
     for (int x = cloneScaleMin.getX(); x <= cloneScaleMax.getX(); x++) {
       for (int y = cloneScaleMin.getY(); y <= cloneScaleMax.getY(); y++) {
         for (int z = cloneScaleMin.getZ(); z <= cloneScaleMax.getZ(); z++) {
-//          KaminoSchematicTransformation transformationCopy = new KaminoSchematicTransformation(transformation);
-//          transformationCopy.move(x, y, z);
-          boolean isCentralDisplay = (x == 0) && (y == 0) && (z == 0);
-          renderSchematic(transformation, new Vec3(x, y, z).multiply(schematicSize), ms, camera, isCentralDisplay, buffer);
+          isRenderingMain = (x == 0) && (y == 0) && (z == 0);
+          renderSchematic(transformation, new Vec3(x, y, z).multiply(schematicSize), ms, camera, buffer);
         }
       }
     }
+    //Prevent unwanted interference with the placement outline
+    isRenderingMultiple = false;
+    isRenderingMain = true;
     
   }
   
-  protected void renderSchematic(SchematicTransformation transformation, Vec3 cloneOffset, PoseStack ms, Vec3 camera, boolean isCentralDisplay, SuperRenderTypeBuffer buffer) {
+  protected void renderSchematic(SchematicTransformation transformation, Vec3 cloneOffset, PoseStack ms, Vec3 camera, SuperRenderTypeBuffer buffer) {
     ms.pushPose();
     
     transformation.applyTransformations(ms, camera);
@@ -256,8 +263,10 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
     }
     
     if (active)
-      currentTool.getTool()
-          .renderOnSchematic(ms, buffer);
+      if (isRenderingMain) {
+        currentTool.getTool()
+            .renderOnSchematic(ms, buffer);
+      } else SimpleSchematicOutlineRenderer.render(ms, this, buffer);
     
     ms.popPose();
   }
@@ -440,6 +449,14 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
   
   public void setCloneOffset(Vec3i offset) {
     cloneOffset = offset;
+  }
+  
+  public boolean isRenderingMain() {
+    return isRenderingMain;
+  }
+  
+  public boolean isRenderingMultiple() {
+    return isRenderingMultiple;
   }
   
 }

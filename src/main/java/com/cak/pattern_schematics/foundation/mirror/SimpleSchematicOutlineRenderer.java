@@ -17,6 +17,7 @@ public class SimpleSchematicOutlineRenderer {
         .colored(0x6886c5)
         .withFaceTexture(AllSpecialTextures.CHECKERED)
         .lineWidth(1 / 16f);
+    applyOutlineModification(schematicHandler);
     outline.render(ms, buffer, Vec3.ZERO, AnimationTickHolder.getPartialTicks());
     outline.getParams()
         .clearTextures();
@@ -28,7 +29,7 @@ public class SimpleSchematicOutlineRenderer {
       AABBOutline outline = schematicHandler.getOutline();
       PatternSchematicHandler patternSchematicHandler = (PatternSchematicHandler) schematicHandler;
       outline.getParams()
-          .colored(patternSchematicHandler.isRenderingMain() ? 0xa066af : 0xa6a1af)
+          .colored(patternSchematicHandler.isRenderingMain() ? 0x9352a3 : 0xa6a1af)
           .lineWidth(
               patternSchematicHandler.isRenderingMain() ?
                   (patternSchematicHandler.isRenderingMultiple() ? 3/32f : 1/16f)
