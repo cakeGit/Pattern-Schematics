@@ -2,6 +2,7 @@ package com.cak.pattern_schematics.foundation.mirror;
 
 import com.cak.pattern_schematics.PatternSchematics;
 import com.cak.pattern_schematics.content.PatternSchematicPackets;
+import com.cak.pattern_schematics.foundation.Vec3iUtils;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllBlocks;
@@ -363,7 +364,7 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
     if (activeSchematicItem == null)
       return;
     PatternSchematicPackets.getChannel().sendToServer(new PatternSchematicSyncPacket(activeHotbarSlot, transformation.toSettings(),
-        transformation.getAnchor(), deployed));
+        transformation.getAnchor(), deployed, cloneScaleMin, cloneScaleMax, cloneOffset));
   }
   
   public void equip(PatternSchematicsToolType tool) {
@@ -374,10 +375,16 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
   
   public void loadSettings(ItemStack blueprint) {
     CompoundTag tag = blueprint.getTag();
+    assert tag != null;
+    
     BlockPos anchor = BlockPos.ZERO;
     StructurePlaceSettings settings = SchematicItem.getSettings(blueprint);
+  
+    cloneScaleMin = Vec3iUtils.getVec3i("CloneScaleMin", tag);
+    cloneScaleMax = Vec3iUtils.getVec3i("CloneScaleMax", tag);
+    cloneOffset = Vec3iUtils.getVec3i("CloneOffset", tag);
+    
     transformation = new SchematicTransformation();
-    System.out.println(settings.getRotation());
     deployed = tag.getBoolean("Deployed");
     if (deployed)
       anchor = NbtUtils.readBlockPos(tag.getCompound("Anchor"));

@@ -1,10 +1,11 @@
 package com.cak.pattern_schematics.foundation.mirror;
 
 import com.cak.pattern_schematics.PatternSchematics;
-import com.simibubi.create.AllItems;
+import com.cak.pattern_schematics.foundation.Vec3iUtils;
 import com.simibubi.create.content.schematics.SchematicInstances;
 import com.simibubi.create.foundation.networking.SimplePacketBase;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,14 +23,19 @@ public class PatternSchematicSyncPacket extends SimplePacketBase {
   public BlockPos anchor;
   public Rotation rotation;
   public Mirror mirror;
+  public Vec3i cloneScaleMin, cloneScaleMax, cloneOffset;
   
   public PatternSchematicSyncPacket(int slot, StructurePlaceSettings settings,
-                                    BlockPos anchor, boolean deployed) {
+                                    BlockPos anchor, boolean deployed,
+                                    Vec3i cloneScaleMin, Vec3i cloneScaleMax, Vec3i cloneOffset) {
     this.slot = slot;
     this.deployed = deployed;
     this.anchor = anchor;
     this.rotation = settings.getRotation();
     this.mirror = settings.getMirror();
+    this.cloneScaleMin = cloneScaleMin;
+    this.cloneScaleMax = cloneScaleMax;
+    this.cloneOffset = cloneOffset;
   }
   
   public PatternSchematicSyncPacket(FriendlyByteBuf buffer) {
@@ -38,6 +44,10 @@ public class PatternSchematicSyncPacket extends SimplePacketBase {
     anchor = buffer.readBlockPos();
     rotation = buffer.readEnum(Rotation.class);
     mirror = buffer.readEnum(Mirror.class);
+  
+    this.cloneScaleMin = Vec3iUtils.unpackVec3i(buffer);
+    this.cloneScaleMax = Vec3iUtils.unpackVec3i(buffer);
+    this.cloneOffset = Vec3iUtils.unpackVec3i(buffer);
   }
   
   @Override
@@ -47,6 +57,10 @@ public class PatternSchematicSyncPacket extends SimplePacketBase {
     buffer.writeBlockPos(anchor);
     buffer.writeEnum(rotation);
     buffer.writeEnum(mirror);
+    
+    Vec3iUtils.packVec3i(cloneScaleMin, buffer);
+    Vec3iUtils.packVec3i(cloneScaleMax, buffer);
+    Vec3iUtils.packVec3i(cloneOffset, buffer);
   }
   
   @Override
@@ -69,6 +83,11 @@ public class PatternSchematicSyncPacket extends SimplePacketBase {
       tag.put("Anchor", NbtUtils.writeBlockPos(anchor));
       tag.putString("Rotation", rotation.name());
       tag.putString("Mirror", mirror.name());
+  
+      Vec3iUtils.putVec3i("CloneScaleMin", cloneScaleMin, tag);
+      Vec3iUtils.putVec3i("CloneScaleMax", cloneScaleMax, tag);
+      Vec3iUtils.putVec3i("CloneOffset", cloneOffset, tag);
+      
       SchematicInstances.clearHash(stack);
     });
     return true;
