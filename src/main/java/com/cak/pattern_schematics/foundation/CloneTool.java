@@ -30,7 +30,7 @@ public class CloneTool extends SchematicToolBase {
     if (!(schematicHandler instanceof PatternSchematicHandler patternSchematicHandler))
       throw new RuntimeException("Clone tool bound in a normal SchematicHandler!");
   
-    patternSchematicHandler.setCloneData(
+    patternSchematicHandler.setCloneScales(
         new Vec3i(-1, 0, -1),
         new Vec3i(1, 0, 1)
     );

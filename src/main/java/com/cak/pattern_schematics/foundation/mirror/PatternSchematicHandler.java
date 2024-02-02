@@ -4,14 +4,19 @@ import com.cak.pattern_schematics.PatternSchematics;
 import com.cak.pattern_schematics.content.PatternSchematicPackets;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.*;
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllKeys;
+import com.simibubi.create.AllPackets;
+import com.simibubi.create.Create;
 import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.content.schematics.SchematicInstances;
 import com.simibubi.create.content.schematics.SchematicItem;
 import com.simibubi.create.content.schematics.SchematicWorld;
-import com.simibubi.create.content.schematics.client.*;
+import com.simibubi.create.content.schematics.client.SchematicHandler;
+import com.simibubi.create.content.schematics.client.SchematicHotbarSlotOverlay;
+import com.simibubi.create.content.schematics.client.SchematicRenderer;
+import com.simibubi.create.content.schematics.client.SchematicTransformation;
 import com.simibubi.create.content.schematics.packet.SchematicPlacePacket;
-import com.simibubi.create.content.schematics.packet.SchematicSyncPacket;
 import com.simibubi.create.foundation.outliner.AABBOutline;
 import com.simibubi.create.foundation.render.SuperRenderTypeBuffer;
 import com.simibubi.create.foundation.utility.AnimationTickHolder;
@@ -48,7 +53,10 @@ import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import java.util.List;
 import java.util.Vector;
 
-/**Gave up with the copious amounts of mixins needed so i just copied the class file :pensive: praise be to mit liscence*/
+/**
+ * Gave up with the copious amounts of mixins needed so i just copied the class file :pensive: praise be to mit
+ * liscence
+ */
 public class PatternSchematicHandler extends SchematicHandler implements IGuiOverlay {
   
   private String displayedSchematic;
@@ -68,8 +76,9 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
   private SchematicHotbarSlotOverlay overlay;
   private PatternSchematicsToolSelectionScreen selectionScreen;
   
-  private Vec3i cloneVectorMin = new Vec3i(0, 0, 0);
-  private Vec3i cloneVectorMax = new Vec3i(0, 0, 0);
+  private Vec3i cloneScaleMin = new Vec3i(0, 0, 0);
+  private Vec3i cloneScaleMax = new Vec3i(0, 0, 0);
+  private Vec3i cloneOffset = new Vec3i(0, 0, 0);
   
   public PatternSchematicHandler() {
     renderers = new Vector<>(3);
@@ -207,12 +216,28 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
           .renderTool(ms, buffer, camera);
       ms.popPose();
     }
-    
-    ms.pushPose();
-    KaminoSchematicTransformation transformationCopy = new KaminoSchematicTransformation(transformation);
-
-    transformation.applyTransformations(ms, camera);
   
+    Vec3 schematicSize = new Vec3(bounds.maxX, bounds.maxY, bounds.maxZ);
+    
+    for (int x = cloneScaleMin.getX(); x <= cloneScaleMax.getX(); x++) {
+      for (int y = cloneScaleMin.getY(); y <= cloneScaleMax.getY(); y++) {
+        for (int z = cloneScaleMin.getZ(); z <= cloneScaleMax.getZ(); z++) {
+//          KaminoSchematicTransformation transformationCopy = new KaminoSchematicTransformation(transformation);
+//          transformationCopy.move(x, y, z);
+          boolean isCentralDisplay = (x == 0) && (y == 0) && (z == 0);
+          renderSchematic(transformation, new Vec3(x, y, z).multiply(schematicSize), ms, camera, isCentralDisplay, buffer);
+        }
+      }
+    }
+    
+  }
+  
+  protected void renderSchematic(SchematicTransformation transformation, Vec3 cloneOffset, PoseStack ms, Vec3 camera, boolean isCentralDisplay, SuperRenderTypeBuffer buffer) {
+    ms.pushPose();
+    
+    transformation.applyTransformations(ms, camera);
+    ms.translate(cloneOffset.x(), cloneOffset.y(), cloneOffset.z());
+    
     if (!renderers.isEmpty()) {
       float pt = AnimationTickHolder.getPartialTicks();
       boolean lr = transformation.getScaleLR()
@@ -229,17 +254,12 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
         renderers.get(0)
             .render(ms, buffer);
     }
-  
+    
     if (active)
       currentTool.getTool()
           .renderOnSchematic(ms, buffer);
-  
+    
     ms.popPose();
-    
-    for (int x = cloneVectorMin.getX(); x <= cloneVectorMax.getX(); x++) {
-
-    }
-    
   }
   
   public void updateRenderers() {
@@ -413,9 +433,13 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
     return outline;
   }
   
-  public void setCloneData(Vec3i min, Vec3i max) {
-    cloneVectorMin = min;
-    cloneVectorMax = max;
+  public void setCloneScales(Vec3i min, Vec3i max) {
+    cloneScaleMin = min;
+    cloneScaleMax = max;
+  }
+  
+  public void setCloneOffset(Vec3i offset) {
+    cloneOffset = offset;
   }
   
 }
