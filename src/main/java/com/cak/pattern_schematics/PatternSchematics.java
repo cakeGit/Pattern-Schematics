@@ -1,14 +1,10 @@
 package com.cak.pattern_schematics;
 
 import com.cak.pattern_schematics.registry.PatternSchematicPackets;
-import com.cak.pattern_schematics.content.PatternSchematicsItem;
 import com.cak.pattern_schematics.registry.PatternSchematicsItems;
 import com.mojang.logging.LogUtils;
-import com.simibubi.create.AllCreativeModeTabs;
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;

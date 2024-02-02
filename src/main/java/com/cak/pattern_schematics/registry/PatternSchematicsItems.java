@@ -1,6 +1,6 @@
 package com.cak.pattern_schematics.registry;
 
-import com.cak.pattern_schematics.content.PatternSchematicsItem;
+import com.cak.pattern_schematics.content.PatternSchematicItem;
 import com.simibubi.create.AllCreativeModeTabs;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.world.item.Item;
@@ -16,8 +16,8 @@ public class PatternSchematicsItems {
       .tab(AllCreativeModeTabs.BASE_CREATIVE_TAB.getKey())
       .register();
   
-  public static final ItemEntry<PatternSchematicsItem> PATTERN_SCHEMATIC = REGISTRATE
-      .item("pattern_schematic", PatternSchematicsItem::new)
+  public static final ItemEntry<PatternSchematicItem> PATTERN_SCHEMATIC = REGISTRATE
+      .item("pattern_schematic", PatternSchematicItem::new)
       .defaultModel()
       .properties(p -> p.stacksTo(1))
       //.tab(AllCreativeModeTabs.BASE_CREATIVE_TAB.getKey())
