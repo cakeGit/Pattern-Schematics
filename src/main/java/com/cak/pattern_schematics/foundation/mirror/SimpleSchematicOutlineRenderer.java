@@ -25,7 +25,7 @@ public class SimpleSchematicOutlineRenderer {
   }
   
   public static void applyOutlineModification(SchematicHandler schematicHandler) {
-    if (PatternSchematicHandler.class.isInstance(schematicHandler)) {
+    if (schematicHandler instanceof PatternSchematicHandler) {
       AABBOutline outline = schematicHandler.getOutline();
       PatternSchematicHandler patternSchematicHandler = (PatternSchematicHandler) schematicHandler;
       outline.getParams()
