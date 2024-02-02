@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "pattern_schematics.refmap.json",
   "mixins": [
+    "DeployBaseMixin",
     "SchematicTableBlockEntityMixin",
     "SchematicTableMenuMixin",
     "SchematicToolBaseMixin",

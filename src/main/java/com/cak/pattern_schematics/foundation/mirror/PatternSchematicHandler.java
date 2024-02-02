@@ -233,9 +233,6 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
         }
       }
     }
-    //Prevent unwanted interference with the placement outline
-    isRenderingMultiple = false;
-    isRenderingMain = true;
     
   }
   
