@@ -2,6 +2,7 @@ package com.cak.pattern_schematics.foundation;
 
 import com.cak.pattern_schematics.content.PatternSchematicsItem;
 import com.cak.pattern_schematics.PatternSchematics;
+import com.cak.pattern_schematics.registry.PatternSchematicsItems;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.schematics.SchematicItem;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -21,8 +22,8 @@ public enum SchematicUploadItemSource {
       AllItems.SCHEMATIC
   ) ),
   PATTERN(PatternSchematicsItem::create, 1, List.of(
-      PatternSchematics.EMPTY_PATTERN_SCHEMATIC,
-      PatternSchematics.PATTERN_SCHEMATIC
+      PatternSchematicsItems.EMPTY_PATTERN_SCHEMATIC,
+      PatternSchematicsItems.PATTERN_SCHEMATIC
   ))
   ;
   
