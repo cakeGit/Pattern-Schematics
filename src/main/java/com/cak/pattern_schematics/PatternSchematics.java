@@ -1,11 +1,10 @@
 package com.cak.pattern_schematics;
 
-import com.cak.pattern_schematics.content.PatternSchematicPackets;
+import com.cak.pattern_schematics.registry.PatternSchematicPackets;
 import com.cak.pattern_schematics.content.PatternSchematicsItem;
+import com.cak.pattern_schematics.registry.PatternSchematicsItems;
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.AllCreativeModeTabs;
-import com.simibubi.create.Create;
-import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.resources.ResourceLocation;
@@ -26,23 +25,10 @@ public class PatternSchematics
     
     public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID);
     
-    public static final ItemEntry<Item> EMPTY_PATTERN_SCHEMATIC = REGISTRATE
-        .item("empty_pattern_schematic", Item::new)
-        .defaultModel()
-        .properties(p -> p.stacksTo(1))
-        .tab(AllCreativeModeTabs.BASE_CREATIVE_TAB.getKey())
-        .register();
-    
-    public static final ItemEntry<PatternSchematicsItem> PATTERN_SCHEMATIC = REGISTRATE
-        .item("pattern_schematic", PatternSchematicsItem::new)
-        .defaultModel()
-        .properties(p -> p.stacksTo(1))
-        //.tab(AllCreativeModeTabs.BASE_CREATIVE_TAB.getKey())
-        .register();
-    
     public PatternSchematics() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         REGISTRATE.registerEventListeners(modEventBus);
+        PatternSchematicsItems.register();
         PatternSchematicPackets.registerPackets();
         PatternSchematicsLang.register();
     }
