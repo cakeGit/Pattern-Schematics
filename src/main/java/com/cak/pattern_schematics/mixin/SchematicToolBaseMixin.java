@@ -3,6 +3,7 @@ package com.cak.pattern_schematics.mixin;
 import com.cak.pattern_schematics.PatternSchematicsClient;
 import com.cak.pattern_schematics.foundation.mirror.PatternSchematicHandler;
 import com.cak.pattern_schematics.foundation.mirror.PatternSchematicsToolType;
+import com.cak.pattern_schematics.foundation.mirror.SimpleSchematicOutlineRenderer;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.content.schematics.client.SchematicHandler;
 import com.simibubi.create.content.schematics.client.tools.SchematicToolBase;
@@ -27,12 +28,9 @@ public class SchematicToolBaseMixin {
         PatternSchematicsClient.PATTERN_SCHEMATIC_HANDLER : CreateClient.SCHEMATIC_HANDLER);
   }
   
-  @Inject(method = "renderOnSchematic", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lcom/simibubi/create/foundation/outliner/Outline$OutlineParams;colored(I)Lcom/simibubi/create/foundation/outliner/Outline$OutlineParams;"))
+  @Inject(method = "renderOnSchematic", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lcom/simibubi/create/foundation/outliner/AABBOutline;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/simibubi/create/foundation/render/SuperRenderTypeBuffer;Lnet/minecraft/world/phys/Vec3;F)V"))
   public void renderOnSchematic(CallbackInfo ci) {
-    if (PatternSchematicHandler.class.isInstance(schematicHandler)) {
-      AABBOutline outline = schematicHandler.getOutline();
-      outline.getParams().colored(0xa586a5);
-    }
+    SimpleSchematicOutlineRenderer.applyOutlineModification(schematicHandler);
   }
   
 }
