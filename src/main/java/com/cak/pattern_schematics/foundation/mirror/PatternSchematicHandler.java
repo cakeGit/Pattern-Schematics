@@ -1,9 +1,8 @@
 package com.cak.pattern_schematics.foundation.mirror;
 
-import com.cak.pattern_schematics.PatternSchematics;
 import com.cak.pattern_schematics.registry.PatternSchematicPackets;
 import com.cak.pattern_schematics.content.packet.PatternSchematicSyncPacket;
-import com.cak.pattern_schematics.foundation.Vec3iUtils;
+import com.cak.pattern_schematics.foundation.util.Vec3iUtils;
 import com.cak.pattern_schematics.registry.PatternSchematicsItems;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;

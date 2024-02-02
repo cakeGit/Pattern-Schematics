@@ -1,7 +1,6 @@
 package com.cak.pattern_schematics.content.packet;
 
-import com.cak.pattern_schematics.PatternSchematics;
-import com.cak.pattern_schematics.foundation.Vec3iUtils;
+import com.cak.pattern_schematics.foundation.util.Vec3iUtils;
 import com.cak.pattern_schematics.registry.PatternSchematicsItems;
 import com.simibubi.create.content.schematics.SchematicInstances;
 import com.simibubi.create.foundation.networking.SimplePacketBase;

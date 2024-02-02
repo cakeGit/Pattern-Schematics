@@ -1,4 +1,4 @@
-package com.cak.pattern_schematics.foundation;
+package com.cak.pattern_schematics.foundation.util;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
