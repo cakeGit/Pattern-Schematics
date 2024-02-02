@@ -1,8 +1,10 @@
 package com.cak.pattern_schematics.foundation.mirror;
 
 import com.cak.pattern_schematics.PatternSchematics;
-import com.cak.pattern_schematics.content.PatternSchematicPackets;
+import com.cak.pattern_schematics.registry.PatternSchematicPackets;
+import com.cak.pattern_schematics.content.packet.PatternSchematicSyncPacket;
 import com.cak.pattern_schematics.foundation.Vec3iUtils;
+import com.cak.pattern_schematics.registry.PatternSchematicsItems;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllBlocks;
@@ -123,6 +125,7 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
       return;
     }
     
+    //Todo: fix and make a pull req to create to fix it when presin numbers to quick switch
     if (!active || !stack.getTag()
         .getString("File")
         .equals(displayedSchematic))
@@ -336,7 +339,7 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
   
   private ItemStack findBlueprintInHand(Player player) {
     ItemStack stack = player.getMainHandItem();
-    if (!PatternSchematics.PATTERN_SCHEMATIC.isIn(stack))
+    if (!PatternSchematicsItems.PATTERN_SCHEMATIC.isIn(stack))
       return null;
     if (!stack.hasTag())
       return null;

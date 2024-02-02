@@ -1,10 +1,7 @@
-package com.cak.pattern_schematics.content;
+package com.cak.pattern_schematics.registry;
 
 import com.cak.pattern_schematics.PatternSchematics;
-import com.cak.pattern_schematics.foundation.mirror.PatternSchematicSyncPacket;
-import com.simibubi.create.AllPackets;
-import com.simibubi.create.Create;
-import com.simibubi.create.content.schematics.packet.SchematicSyncPacket;
+import com.cak.pattern_schematics.content.packet.PatternSchematicSyncPacket;
 import com.simibubi.create.foundation.networking.SimplePacketBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
