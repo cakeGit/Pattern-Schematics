@@ -1,5 +1,6 @@
 package com.cak.pattern_schematics.foundation.util;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -27,6 +28,14 @@ public class Vec3iUtils {
         tag.getInt(name + "_x"),
         tag.getInt(name + "_y"),
         tag.getInt(name + "_z")
+    );
+  }
+  
+  public static Vec3i multiplyVec3i(Vec3i blockPos, Vec3i vec3i) {
+    return new Vec3i(
+        blockPos.getX() * vec3i.getX(),
+        blockPos.getY() * vec3i.getY(),
+        blockPos.getZ() * vec3i.getZ()
     );
   }
   
