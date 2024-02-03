@@ -224,7 +224,7 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
       ms.popPose();
     }
     
-    Vec3 schematicSize = new Vec3(bounds.maxX, bounds.maxY, bounds.maxZ);
+    Vec3 schematicSize = new Vec3(bounds.getXsize(), bounds.getYsize(), bounds.getZsize());
     
     isRenderingMultiple = !cloneScaleMax.equals(cloneScaleMin);
     
