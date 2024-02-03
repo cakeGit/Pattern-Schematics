@@ -7,16 +7,22 @@ import com.simibubi.create.content.schematics.SchematicWorld;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class PatternSchematicWorld extends SchematicWorld {
   
@@ -48,10 +54,39 @@ public class PatternSchematicWorld extends SchematicWorld {
   public boolean setBlock(BlockPos pos, BlockState arg1, int arg2) {
     AtomicBoolean result = new AtomicBoolean(false);
     forEachClone(clonePos -> {
-      result.set(result.get() || super.setBlock(getRealCloneLoc(pos, clonePos), arg1, arg2));
+      if (super.setBlock(applyCloneToRealLoc(pos, clonePos), arg1, arg2))
+        result.set(true);
     });
     return result.get();
   }
+  
+  @Override
+  public boolean addFreshEntity(Entity entityIn) {
+    return applyToClones(clonePos -> {
+      Entity newEntity = cloneEntity(entityIn);
+      newEntity.setPos(applyCloneToRealLoc(newEntity.position(), clonePos));
+      System.out.println("created entity at: " + newEntity.getEyePosition());
+      return super.addFreshEntity(newEntity);
+    });
+  }
+  
+  protected Entity cloneEntity(Entity source) {
+    CompoundTag tag = new CompoundTag();
+    source.save(tag);
+    Entity newEntity = EntityType.create(tag, world).orElseThrow();
+    newEntity.setUUID(UUID.randomUUID());
+    return newEntity;
+  }
+  
+  protected boolean applyToClones(Function<Vec3i, Boolean> function) {
+    AtomicBoolean result = new AtomicBoolean(false);
+    forEachClone(clonePos -> {
+      if (function.apply(clonePos))
+        result.set(true);
+    });
+    return result.get();
+  }
+  
   protected  void forEachClone(Consumer<Vec3i> consumer) {
     for (int x = cloneScaleMin.getX(); x <= cloneScaleMax.getX(); x++) {
       for (int y = cloneScaleMin.getY(); y <= cloneScaleMax.getY(); y++) {
@@ -67,30 +102,11 @@ public class PatternSchematicWorld extends SchematicWorld {
     return super.getBounds();
   }
   
-  protected BlockPos getRealCloneLoc(Vec3i local, Vec3i clone) {
-    //return new BlockPos(local);
-    System.out.println(sourceBounds);
-    return new BlockPos(local.offset(Vec3iUtils.multiplyVec3i(clone, sourceBounds.getLength().multiply(2))));
+  public BlockPos applyCloneToRealLoc(Vec3i local, Vec3i clone) {
+    return new BlockPos(local.offset(Vec3iUtils.multiplyVec3i(clone, sourceBounds.getLength().offset(1, 1, 1))));
   }
-//
-//  protected class PatternWrappedMap<V> extends HashMap<BlockPos, V> {
-//
-//    @Override
-//    public V put(BlockPos key, V value) {
-//      System.out.println("jbi");
-//      if (value instanceof BlockState) {
-//        System.out.println("jbi");
-//        forEachClone(clonePos -> {
-//          super.put(getRealCloneLoc(key, clonePos), value);
-//        });
-//      } else {
-//        return super.put(key, value);
-//      }
-//      return value;
-//    }
-//
-//
-//
-//  }
+  public Vec3 applyCloneToRealLoc(Vec3 local, Vec3i clone) {
+    return local.add(Vec3.atLowerCornerOf(Vec3iUtils.multiplyVec3i(clone, sourceBounds.getLength().offset(1, 1, 1))));
+  }
   
 }
