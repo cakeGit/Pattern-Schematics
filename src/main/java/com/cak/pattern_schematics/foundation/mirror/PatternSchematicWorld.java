@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +25,10 @@ import java.util.function.Function;
 
 public class PatternSchematicWorld extends SchematicWorld {
   
-  Vec3i cloneScaleMin, cloneScaleMax, cloneOffset;
-  BoundingBox sourceBounds;
+  public Vec3i cloneScaleMin;
+  public Vec3i cloneScaleMax;
+  public Vec3i cloneOffset;
+  public BoundingBox sourceBounds;
   
   public PatternSchematicWorld(BlockPos anchor, Level original) {
     super(anchor, original);
@@ -97,16 +98,24 @@ public class PatternSchematicWorld extends SchematicWorld {
     }
   }
   
-  @Override
-  public BoundingBox getBounds() {
-    return super.getBounds();
-  }
-  
   public BlockPos applyCloneToRealLoc(Vec3i local, Vec3i clone) {
     return new BlockPos(local.offset(Vec3iUtils.multiplyVec3i(clone, sourceBounds.getLength().offset(1, 1, 1))));
   }
   public Vec3 applyCloneToRealLoc(Vec3 local, Vec3i clone) {
     return local.add(Vec3.atLowerCornerOf(Vec3iUtils.multiplyVec3i(clone, sourceBounds.getLength().offset(1, 1, 1))));
+  }
+  
+  public BlockPos applyRealToSourceLoc(BlockPos local) {
+    Vec3i length = sourceBounds.getLength().offset(1, 1, 1);
+    return new BlockPos(
+        repeatingBounds(local.getX(), length.getX()),
+        repeatingBounds(local.getY(), length.getY()),
+        repeatingBounds(local.getZ(), length.getZ())
+    );
+  }
+  
+  private int repeatingBounds(int source, int length) {
+    return (length + (source % length)) % length;
   }
   
 }
