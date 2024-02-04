@@ -30,7 +30,7 @@ public class SchematicPrinterMixin {
   }
   
   @ModifyVariable(method = "loadSchematic", ordinal = 0, at = @At(value = "STORE"))
-  private StructureTemplate loadSchematic(StructureTemplate template) {
+  private StructureTemplate store_activeTemplate(StructureTemplate template) {
     lastThreadStructureTemplate = template;
     return template;
   }
@@ -38,7 +38,6 @@ public class SchematicPrinterMixin {
   @Inject(method = "loadSchematic", at = @At(value = "FIELD", shift = At.Shift.AFTER, opcode = Opcodes.PUTFIELD, target = "Lcom/simibubi/create/content/schematics/SchematicPrinter;blockReader:Lcom/simibubi/create/content/schematics/SchematicWorld;"))
   private void loadSchematic(ItemStack blueprint, Level originalWorld, boolean processNBT, CallbackInfo ci) {
     if (lastThreadStack.getItem() instanceof PatternSchematicItem) {
-      System.out.println("mixin i2n");
       PatternSchematicWorld patternSchematicWorld = new PatternSchematicWorld(blockReader.anchor, blockReader.getLevel());
       patternSchematicWorld.putExtraData(blueprint, lastThreadStructureTemplate);
       blockReader = patternSchematicWorld;

@@ -6,6 +6,8 @@
   "refmap": "pattern_schematics.refmap.json",
   "mixins": [
     "DeployBaseMixin",
+    "DeployerMovementBehaviorMixin",
+    "SchematicannonInventoryMixin",
     "SchematicInstancesMixin",
     "SchematicPrinterMixin",
     "SchematicTableBlockEntityMixin",
