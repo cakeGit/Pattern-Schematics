@@ -1,5 +1,6 @@
 package com.cak.pattern_schematics;
 
+import com.cak.pattern_schematics.foundation.ContraptionSchematicTransform;
 import com.cak.pattern_schematics.registry.PatternSchematicPackets;
 import com.cak.pattern_schematics.registry.PatternSchematicsItems;
 import com.mojang.logging.LogUtils;
@@ -10,10 +11,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
+import java.util.List;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(PatternSchematics.MODID)
-public class PatternSchematics
-{
+public class PatternSchematics {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "create_pattern_schematics";
     // Directly reference a slf4j logger

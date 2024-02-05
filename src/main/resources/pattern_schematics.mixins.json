@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "pattern_schematics.refmap.json",
   "mixins": [
+    "AbstractContraptionEntityMixin",
     "DeployBaseMixin",
     "DeployerMovementBehaviorMixin",
     "SchematicannonInventoryMixin",

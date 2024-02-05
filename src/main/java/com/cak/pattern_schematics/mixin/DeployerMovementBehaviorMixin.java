@@ -1,18 +1,16 @@
 package com.cak.pattern_schematics.mixin;
 
+import com.cak.pattern_schematics.foundation.ContraptionSchematicTransform;
 import com.cak.pattern_schematics.foundation.mirror.PatternSchematicWorld;
-import com.cak.pattern_schematics.foundation.util.ReflectionUtils;
 import com.cak.pattern_schematics.registry.PatternSchematicsItems;
-import com.simibubi.create.content.contraptions.TranslatingContraption;
+import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
-import com.simibubi.create.content.contraptions.piston.PistonContraption;
 import com.simibubi.create.content.kinetics.deployer.DeployerFakePlayer;
 import com.simibubi.create.content.kinetics.deployer.DeployerMovementBehaviour;
 import com.simibubi.create.content.schematics.SchematicItem;
 import com.simibubi.create.content.schematics.SchematicWorld;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -27,30 +25,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = DeployerMovementBehaviour.class, remap = false)
 public class DeployerMovementBehaviorMixin {
+
+  private ItemStack currentBlueprint;
+  private Contraption currentContraption;
+  private ContraptionSchematicTransform<?> currentContraptionSchematicTransform;
+  private Level currentLevel;
+  private BlockPos currentBlockPos;
   
-  private static ItemStack currentThreadBlueprint;
-  private static Direction currentThreadPlacementDirection;
   
   @Inject(method = "activateAsSchematicPrinter", at = @At("HEAD"))
-  public void head_activateAsSchematicPrinter(MovementContext context, BlockPos pos, DeployerFakePlayer player, Level world, ItemStack filter, CallbackInfo ci) {
-    currentThreadPlacementDirection = null;
-    if (context.contraption instanceof TranslatingContraption translatingContraption) {
-      currentThreadPlacementDirection = ReflectionUtils.getPrivateField(translatingContraption, "cachedColliderDirection", Direction.class);
-    }
-    if (currentThreadPlacementDirection.getAxis() == Direction.Axis.Y) {
-      currentThreadPlacementDirection = null;
-    }
+  public void head_activateAsSchematicPrinter(MovementContext context, BlockPos blockPos, DeployerFakePlayer player, Level world, ItemStack filter, CallbackInfo ci) {
+    currentContraption = context.contraption;
+    currentBlockPos = blockPos;
+    currentLevel = world;
   }
   
   @Redirect(method = "activate", at = @At(value = "INVOKE", target = "Lcom/tterrag/registrate/util/entry/ItemEntry;isIn(Lnet/minecraft/world/item/ItemStack;)Z"))
   public boolean isIn(ItemEntry<SchematicItem> instance, ItemStack stack) {
-    currentThreadBlueprint = stack;
+    currentBlueprint = stack;
     return instance.isIn(stack) || PatternSchematicsItems.PATTERN_SCHEMATIC.isIn(stack);
   }
   
   @Redirect(method = "activateAsSchematicPrinter", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/structure/BoundingBox;isInside(Lnet/minecraft/core/Vec3i;)Z"))
   public boolean isInside(BoundingBox instance, Vec3i vec3i) {
-    if (PatternSchematicsItems.PATTERN_SCHEMATIC.isIn(currentThreadBlueprint)) {
+    if (PatternSchematicsItems.PATTERN_SCHEMATIC.isIn(currentBlueprint)) {
       return true;
     }
     return instance.isInside(vec3i);
@@ -58,15 +56,32 @@ public class DeployerMovementBehaviorMixin {
   
   @Redirect(method = "activateAsSchematicPrinter", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/content/schematics/SchematicWorld;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
   public BlockState getBlockState(SchematicWorld instance, BlockPos globalPos) {
-    return instance.getBlockState(modifyPos(globalPos, instance));
+    return transformBlock(instance.getBlockState(modifyPos(globalPos, instance)));
   }
   
   @Redirect(method = "activateAsSchematicPrinter", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/content/schematics/SchematicWorld;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;"))
   public BlockEntity getBlockEntity(SchematicWorld instance, BlockPos globalPos) {
-    return instance.getBlockEntity(modifyPos(globalPos, instance));
+    BlockEntity blockEntity = instance.getBlockEntity(modifyPos(globalPos, instance));
+    if (blockEntity != null)
+      blockEntity.setBlockState(transformBlock(blockEntity.getBlockState()));
+    return blockEntity;
+  }
+  
+  private BlockState transformBlock(BlockState blockState) {
+    if (blockState == null)
+      return null;
+    currentContraptionSchematicTransform = ContraptionSchematicTransform.Handlers.get(currentContraption);
+    if (currentContraptionSchematicTransform != null) {
+      blockState = currentContraptionSchematicTransform.castModifyState(currentContraption, blockState, currentBlockPos, currentLevel);
+    }
+    return blockState;
   }
   
   private BlockPos modifyPos(BlockPos globalPos, SchematicWorld instance) {
+    currentContraptionSchematicTransform = ContraptionSchematicTransform.Handlers.get(currentContraption);
+    if (currentContraptionSchematicTransform != null) {
+      globalPos = currentContraptionSchematicTransform.castModifyPos(currentContraption, globalPos);
+    }
     if (instance instanceof PatternSchematicWorld patternSchematicWorld) {
       return patternSchematicWorld.applyRealToSourceLoc(
           globalPos.subtract(patternSchematicWorld.anchor)
