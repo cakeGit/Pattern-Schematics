@@ -39,4 +39,20 @@ public class Vec3iUtils {
     );
   }
   
+  public static Vec3i min(Vec3i vec, int i) {
+    return new Vec3i(
+        Math.min(vec.getX(), i),
+        Math.min(vec.getY(), i),
+        Math.min(vec.getZ(), i)
+    );
+  }
+  
+  public static Vec3i max(Vec3i vec, int i) {
+    return new Vec3i(
+        Math.max(vec.getX(), i),
+        Math.max(vec.getY(), i),
+        Math.max(vec.getZ(), i)
+    );
+  }
+  
 }

@@ -10,6 +10,7 @@ import com.simibubi.create.foundation.utility.VecHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 
@@ -22,20 +23,28 @@ public class CloneTool extends SchematicToolBase {
   
   @Override
   public boolean handleMouseWheel(double delta) {
-    if (!schematicSelected || !selectedFace.getAxis().isHorizontal())
+    if (!schematicSelected)
       return true;
-  
-    SchematicTransformation transformation = schematicHandler.getTransformation();
     
     if (!(schematicHandler instanceof PatternSchematicHandler patternSchematicHandler))
       throw new RuntimeException("Clone tool bound in a normal SchematicHandler!");
+    
+    boolean isPositive = selectedFace.getAxisDirection() == Direction.AxisDirection.POSITIVE;
+    
+    Vec3i cloneScale;
+    if (isPositive)
+      cloneScale = patternSchematicHandler.getCloneScaleMax();
+    else
+      cloneScale = patternSchematicHandler.getCloneScaleMin();
   
-    patternSchematicHandler.setCloneScales(
-        new Vec3i(-1, 0, -1),
-        new Vec3i(1, 0, 1)
-    );
+    cloneScale = cloneScale.relative(selectedFace, Mth.sign(delta));
+    
+    if (isPositive)
+      patternSchematicHandler.setCloneScaleMax(cloneScale);
+    else
+      patternSchematicHandler.setCloneScaleMin(cloneScale);
+  
     schematicHandler.markDirty();
-  
     return true;
   }
   

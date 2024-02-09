@@ -448,9 +448,20 @@ public class PatternSchematicHandler extends SchematicHandler implements IGuiOve
     return outline;
   }
   
-  public void setCloneScales(Vec3i min, Vec3i max) {
-    cloneScaleMin = min;
-    cloneScaleMax = max;
+  public void setCloneScaleMin(Vec3i min) {
+    cloneScaleMin = Vec3iUtils.min(min, 0);
+  }
+  
+  public void setCloneScaleMax(Vec3i max) {
+    cloneScaleMax = Vec3iUtils.max(max, 0);
+  }
+  
+  public Vec3i getCloneScaleMin() {
+    return cloneScaleMin;
+  }
+  
+  public Vec3i getCloneScaleMax() {
+    return cloneScaleMax;
   }
   
   public void setCloneOffset(Vec3i offset) {

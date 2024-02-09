@@ -55,6 +55,7 @@ public class PatternSchematicWorld extends SchematicWorld {
   public boolean setBlock(BlockPos pos, BlockState arg1, int arg2) {
     AtomicBoolean result = new AtomicBoolean(false);
     forEachClone(clonePos -> {
+      System.out.println(applyCloneToRealLoc(pos, clonePos));
       if (super.setBlock(applyCloneToRealLoc(pos, clonePos), arg1, arg2))
         result.set(true);
     });
@@ -66,7 +67,6 @@ public class PatternSchematicWorld extends SchematicWorld {
     return applyToClones(clonePos -> {
       Entity newEntity = cloneEntity(entityIn);
       newEntity.setPos(applyCloneToRealLoc(newEntity.position(), clonePos));
-      System.out.println("created entity at: " + newEntity.getEyePosition());
       return super.addFreshEntity(newEntity);
     });
   }
@@ -98,6 +98,10 @@ public class PatternSchematicWorld extends SchematicWorld {
     }
   }
   
+  @Override
+  public BoundingBox getBounds() {
+    return super.getBounds().inflatedBy(1);
+  }
   public BlockPos applyCloneToRealLoc(Vec3i local, Vec3i clone) {
     return new BlockPos(local.offset(Vec3iUtils.multiplyVec3i(clone, sourceBounds.getLength().offset(1, 1, 1))));
   }
