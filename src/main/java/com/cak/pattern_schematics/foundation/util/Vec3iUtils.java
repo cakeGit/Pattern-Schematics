@@ -31,11 +31,11 @@ public class Vec3iUtils {
     );
   }
   
-  public static Vec3i multiplyVec3i(Vec3i blockPos, Vec3i vec3i) {
+  public static Vec3i multiplyVec3i(Vec3i vec1, Vec3i vec2) {
     return new Vec3i(
-        blockPos.getX() * vec3i.getX(),
-        blockPos.getY() * vec3i.getY(),
-        blockPos.getZ() * vec3i.getZ()
+        vec1.getX() * vec2.getX(),
+        vec1.getY() * vec2.getY(),
+        vec1.getZ() * vec2.getZ()
     );
   }
   
