@@ -25,6 +25,10 @@ import java.util.function.Function;
 
 public class PatternSchematicWorld extends SchematicWorld {
   
+  /**Tracking data from {@link com.cak.pattern_schematics.mixin.StructureTemplateMixin}*/
+  public static boolean isPlacingTemplate;
+  public static boolean isPlacingUpdate;
+  
   public Vec3i cloneScaleMin;
   public Vec3i cloneScaleMax;
   public Vec3i cloneOffset;
@@ -51,12 +55,12 @@ public class PatternSchematicWorld extends SchematicWorld {
     sourceBounds = template.getBoundingBox(SchematicItem.getSettings(blueprint), anchor);
   }
   
-  @Override
-  public boolean setBlock(BlockPos pos, BlockState arg1, int arg2) {
+  public boolean setCloneBlock(BlockPos pos, BlockState state, int i) {
     AtomicBoolean result = new AtomicBoolean(false);
+    System.out.println(pos);
     forEachClone(clonePos -> {
-      System.out.println(applyCloneToRealLoc(pos, clonePos));
-      if (super.setBlock(applyCloneToRealLoc(pos, clonePos), arg1, arg2))
+      System.out.println("=>" + applyCloneToRealLoc(pos, clonePos));
+      if (super.setBlock(applyCloneToRealLoc(pos, clonePos), state, i))
         result.set(true);
     });
     return result.get();
@@ -100,7 +104,12 @@ public class PatternSchematicWorld extends SchematicWorld {
   
   @Override
   public BoundingBox getBounds() {
-    return super.getBounds().inflatedBy(1);
+    Vec3i lengths = sourceBounds.getLength().offset(1, 1, 1);
+  
+    Vec3i minBounds = Vec3iUtils.multiplyVec3i(lengths, cloneScaleMin);
+    Vec3i maxBounds = Vec3iUtils.multiplyVec3i(lengths, cloneScaleMax.offset(1, 1, 1));
+
+    return BoundingBox.fromCorners(minBounds, maxBounds);
   }
   public BlockPos applyCloneToRealLoc(Vec3i local, Vec3i clone) {
     return new BlockPos(local.offset(Vec3iUtils.multiplyVec3i(clone, sourceBounds.getLength().offset(1, 1, 1))));
