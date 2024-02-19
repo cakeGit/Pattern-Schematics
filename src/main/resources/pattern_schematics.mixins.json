@@ -10,11 +10,13 @@
     "DeployerMovementBehaviorMixin",
     "SchematicannonInventoryMixin",
     "SchematicInstancesMixin",
+    "SchematicPlacePacketMixin",
     "SchematicPrinterMixin",
     "SchematicTableBlockEntityMixin",
     "SchematicTableMenuMixin",
     "SchematicToolBaseMixin",
-    "ServerSchematicLoaderMixin"
+    "ServerSchematicLoaderMixin",
+    "StructureTemplateMixin"
   ],
   "client": [
   ],
