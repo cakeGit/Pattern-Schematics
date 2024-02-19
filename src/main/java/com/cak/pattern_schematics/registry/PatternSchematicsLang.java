@@ -1,4 +1,6 @@
-package com.cak.pattern_schematics;
+package com.cak.pattern_schematics.registry;
+
+import com.cak.pattern_schematics.PatternSchematics;
 
 public class PatternSchematicsLang {
   

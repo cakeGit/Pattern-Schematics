@@ -1,8 +1,8 @@
 package com.cak.pattern_schematics;
 
-import com.cak.pattern_schematics.foundation.ContraptionSchematicTransform;
 import com.cak.pattern_schematics.registry.PatternSchematicPackets;
 import com.cak.pattern_schematics.registry.PatternSchematicsItems;
+import com.cak.pattern_schematics.registry.PatternSchematicsLang;
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.minecraft.resources.ResourceLocation;
@@ -10,8 +10,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
-
-import java.util.List;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(PatternSchematics.MODID)
