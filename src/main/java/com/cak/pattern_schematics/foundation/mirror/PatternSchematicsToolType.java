@@ -43,7 +43,7 @@ public enum PatternSchematicsToolType {
   }
   
   public MutableComponent getDisplayName() {
-    return (patternModId ? Component.translatable(PatternSchematics.MODID + "schematic.tool." + Lang.asId(name()))
+    return (patternModId ? Component.translatable(PatternSchematics.MODID + ".schematic.tool." + Lang.asId(name()))
     : Lang.translateDirect("schematic.tool." + Lang.asId(name())));
   }
   
@@ -64,7 +64,15 @@ public enum PatternSchematicsToolType {
   }
   
   public List<Component> getDescription() {
-    return Lang.translatedOptions("schematic.tool." + Lang.asId(name()) + ".description", "0", "1", "2", "3");
+    return (patternModId ? PatternSchematicsToolType.translatedOptions(PatternSchematics.MODID + ".schematic.tool." + Lang.asId(name()) + ".description", "0", "1", "2", "3")
+        : Lang.translatedOptions("schematic.tool." + Lang.asId(name()) + ".description", "0", "1", "2", "3"));
+  }
+  
+  public static List<Component> translatedOptions(String prefix, String... keys) {
+    List<Component> result = new ArrayList<>(keys.length);
+    for (String key : keys)
+      result.add(Component.translatable((prefix != null ? prefix + "." : "") + key));
+    return result;
   }
   
 }
