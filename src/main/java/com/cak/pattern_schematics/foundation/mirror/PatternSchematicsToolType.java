@@ -3,6 +3,7 @@ package com.cak.pattern_schematics.foundation.mirror;
 
 import com.cak.pattern_schematics.PatternSchematics;
 import com.cak.pattern_schematics.foundation.CloneTool;
+import com.cak.pattern_schematics.foundation.SingleIcon;
 import com.simibubi.create.content.schematics.client.tools.*;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.utility.Lang;
@@ -22,11 +23,11 @@ public enum PatternSchematicsToolType {
   ROTATE(new RotateTool(), AllIcons.I_TOOL_ROTATE),
   FLIP(new FlipTool(), AllIcons.I_TOOL_MIRROR),
   PRINT(new PlaceTool(), AllIcons.I_CONFIRM),
-  CLONE(new CloneTool(), AllIcons.I_CONFIRM, true);
+  CLONE(new CloneTool(), new SingleIcon(0, 0, PatternSchematics.asResource("textures/gui/clone_tool.png")), true);
   
-  ISchematicTool tool;
-  AllIcons icon;
-  boolean patternModId;
+  final ISchematicTool tool;
+  final AllIcons icon;
+  final boolean patternModId;
   
   PatternSchematicsToolType(ISchematicTool tool, AllIcons icon) {
     this(tool, icon, false);
