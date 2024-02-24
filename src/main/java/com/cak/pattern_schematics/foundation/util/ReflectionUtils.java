@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 public class ReflectionUtils {
   
   @SuppressWarnings("unchecked cast")
-  public static <T> T getPrivateField(Object instance, String name, Class<T> clazz) {
+  public static <T> T getRestrictedField(Object instance, String name, Class<T> clazz) {
     try {
       Field field = instance.getClass().getDeclaredField(name);
       field.setAccessible(true);
