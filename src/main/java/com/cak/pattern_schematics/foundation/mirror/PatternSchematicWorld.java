@@ -1,5 +1,6 @@
 package com.cak.pattern_schematics.foundation.mirror;
 
+import com.cak.pattern_schematics.foundation.ContraptionSchematicTransform;
 import com.cak.pattern_schematics.foundation.util.Vec3iUtils;
 import com.simibubi.create.content.schematics.SchematicChunkSource;
 import com.simibubi.create.content.schematics.SchematicItem;
@@ -25,9 +26,6 @@ import java.util.function.Function;
 
 public class PatternSchematicWorld extends SchematicWorld {
   
-  /**Tracking data from {@link com.cak.pattern_schematics.mixin.StructureTemplateMixin}*/
-  public static boolean isPlacingTemplate;
-  public static boolean isPlacingUpdate;
   
   public Vec3i cloneScaleMin;
   public Vec3i cloneScaleMax;
@@ -55,16 +53,17 @@ public class PatternSchematicWorld extends SchematicWorld {
     sourceBounds = template.getBoundingBox(SchematicItem.getSettings(blueprint), anchor);
   }
   
-  public boolean setCloneBlock(BlockPos pos, BlockState state, int i) {
-    AtomicBoolean result = new AtomicBoolean(false);
-    System.out.println(pos);
-    forEachClone(clonePos -> {
-      System.out.println("=>" + applyCloneToRealLoc(pos, clonePos));
-      if (super.setBlock(applyCloneToRealLoc(pos, clonePos), state, i))
-        result.set(true);
-    });
-    return result.get();
-  }
+  //TODO : Remove by release, i don't think ill need this ever
+//  public boolean setCloneBlock(BlockPos pos, BlockState state, int i) {
+//    AtomicBoolean result = new AtomicBoolean(false);
+//    System.out.println(pos);
+//    forEachClone(clonePos -> {
+//      System.out.println("=>" + applyCloneToRealLoc(pos, clonePos));
+//      if (super.setBlock(applyCloneToRealLoc(pos, clonePos), state, i))
+//        result.set(true);
+//    });
+//    return result.get();
+//  }
   
   @Override
   public boolean addFreshEntity(Entity entityIn) {
@@ -74,6 +73,7 @@ public class PatternSchematicWorld extends SchematicWorld {
       return super.addFreshEntity(newEntity);
     });
   }
+  
   
   protected Entity cloneEntity(Entity source) {
     CompoundTag tag = new CompoundTag();
@@ -111,24 +111,10 @@ public class PatternSchematicWorld extends SchematicWorld {
 
     return BoundingBox.fromCorners(minBounds, maxBounds);
   }
-  public BlockPos applyCloneToRealLoc(Vec3i local, Vec3i clone) {
-    return new BlockPos(local.offset(Vec3iUtils.multiplyVec3i(clone, sourceBounds.getLength().offset(1, 1, 1))));
-  }
-  public Vec3 applyCloneToRealLoc(Vec3 local, Vec3i clone) {
+  
+  /**This should only really be used for working at creation, use {@link ContraptionSchematicTransform} for active contraptions if thats needed*/
+  protected Vec3 applyCloneToRealLoc(Vec3 local, Vec3i clone) {
     return local.add(Vec3.atLowerCornerOf(Vec3iUtils.multiplyVec3i(clone, sourceBounds.getLength().offset(1, 1, 1))));
-  }
-  
-  public BlockPos applyRealToSourceLoc(BlockPos local) {
-    Vec3i length = sourceBounds.getLength().offset(1, 1, 1);
-    return new BlockPos(
-        repeatingBounds(local.getX(), length.getX()),
-        repeatingBounds(local.getY(), length.getY()),
-        repeatingBounds(local.getZ(), length.getZ())
-    );
-  }
-  
-  private int repeatingBounds(int source, int length) {
-    return (length + (source % length)) % length;
   }
   
 }

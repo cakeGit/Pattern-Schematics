@@ -78,14 +78,20 @@ public class DeployerMovementBehaviorMixin {
   }
   
   private BlockPos modifyPos(BlockPos globalPos, SchematicWorld instance) {
-    currentContraptionSchematicTransform = ContraptionSchematicTransform.Handlers.get(currentContraption);
-    if (currentContraptionSchematicTransform != null) {
-      globalPos = currentContraptionSchematicTransform.castModifyPos(currentContraption, globalPos);
-    }
     if (instance instanceof PatternSchematicWorld patternSchematicWorld) {
-      return patternSchematicWorld.applyRealToSourceLoc(
-          globalPos.subtract(patternSchematicWorld.anchor)
+      
+      currentContraptionSchematicTransform = ContraptionSchematicTransform.Handlers.get(currentContraption);
+      
+      globalPos = currentContraptionSchematicTransform.castModifyPos(
+          currentContraption,
+          globalPos.subtract(patternSchematicWorld.anchor))
+            .offset(patternSchematicWorld.anchor
+      );
+      
+      return currentContraptionSchematicTransform.castApplyRealToSourcePosition(
+          currentContraption, patternSchematicWorld, globalPos.subtract(patternSchematicWorld.anchor)
       ).offset(patternSchematicWorld.anchor);
+      
     }
     return globalPos;
   }

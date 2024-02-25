@@ -1,10 +1,12 @@
 package com.cak.pattern_schematics.foundation;
 
+import com.cak.pattern_schematics.foundation.mirror.PatternSchematicWorld;
 import com.cak.pattern_schematics.foundation.util.ReflectionUtils;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.piston.PistonContraption;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -14,8 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ContraptionSchematicTransform<T extends Contraption> {
-  
   public static class Handlers {
+    
+    public static ContraptionSchematicTransform<Contraption> NONE = new ContraptionSchematicTransform<>(Contraption.class);
     
     public static List<ContraptionSchematicTransform<?>> handlers = List.of(
         new ContraptionSchematicTransform.PistonContraptionTransform()
@@ -30,7 +33,7 @@ public class ContraptionSchematicTransform<T extends Contraption> {
           return castHandler;
         }
       }
-      return null;
+      return (ContraptionSchematicTransform<T>) NONE;
     }
   
   }
@@ -47,6 +50,27 @@ public class ContraptionSchematicTransform<T extends Contraption> {
     return target;
   }
   
+  public BlockPos modifyPos(T currentContraption, BlockPos globalPos) {
+    return globalPos;
+  }
+  
+  public BlockState modifyState(T currentContraption, BlockState blockState, BlockPos position, LevelAccessor level) {
+    return blockState;
+  }
+  
+  public Vec3i getSourceLengths(T currentContraption, PatternSchematicWorld patternSchematicWorld) {
+    return patternSchematicWorld.getBounds().getLength();
+  }
+  
+  public BlockPos applyRealToSourcePosition(T currentContraption, PatternSchematicWorld patternSchematicWorld, BlockPos position) {
+    Vec3i length = getSourceLengths(currentContraption, patternSchematicWorld);
+    return new BlockPos(
+        repeatingBounds(position.getX(), length.getX()),
+        repeatingBounds(position.getY(), length.getY()),
+        repeatingBounds(position.getZ(), length.getZ())
+    );
+  }
+  
   @SuppressWarnings("unchecked cast") //Type is already checked
   public BlockPos castModifyPos(Contraption currentContraption, BlockPos globalPos) {
     return modifyPos((T) currentContraption, globalPos);
@@ -57,17 +81,14 @@ public class ContraptionSchematicTransform<T extends Contraption> {
     return modifyState((T) currentContraption, blockState, pos, level);
   }
   
-  public BlockPos modifyPos(T currentContraption, BlockPos globalPos) {
-    return globalPos;
+  @SuppressWarnings("unchecked cast") //Type is already checked
+  public BlockPos castApplyRealToSourcePosition(Contraption currentContraption, PatternSchematicWorld patternSchematicWorld, BlockPos position) {
+    return applyRealToSourcePosition((T) currentContraption, patternSchematicWorld, position);
   }
   
-  public BlockState modifyState(T currentContraption, BlockState blockState, BlockPos pos, LevelAccessor level) {
-    return blockState;
-  }
-  
-  protected static BlockState rotate(Direction direction, BlockState blockState, BlockPos pos, LevelAccessor level) {
-    Rotation rotation = Rotation.values()[direction.get2DDataValue()];
-    return blockState.rotate(level, pos, rotation);
+  /**Mod behaves not as needed when below 0*/
+  private int repeatingBounds(int source, int length) {
+    return (length + (source % length)) % length;
   }
   
   public static class PistonContraptionTransform extends ContraptionSchematicTransform<PistonContraption> {
@@ -77,12 +98,27 @@ public class ContraptionSchematicTransform<T extends Contraption> {
     }
   
     @Override
+    public BlockPos modifyPos(PistonContraption currentContraption, BlockPos globalPos) {
+      return globalPos.rotate(getRotationOfPistonContraption(currentContraption));
+    }
+  
+    @Override
+    public Vec3i getSourceLengths(PistonContraption currentContraption, PatternSchematicWorld patternSchematicWorld) {
+      return new BlockPos(super.getSourceLengths(currentContraption, patternSchematicWorld))
+          .rotate(getRotationOfPistonContraption(currentContraption));
+    }
+    @Override
     public BlockState modifyState(PistonContraption currentContraption, BlockState blockState, BlockPos position, LevelAccessor level) {
-      return rotate(
-          ReflectionUtils.getPrivateField(currentContraption, "orientation", Direction.class),
-          super.modifyState(currentContraption, blockState, position, level),
-          position, level
-      );
+      return super.modifyState(currentContraption, blockState, position, level)
+          .rotate(level, position, getRotationOfPistonContraption(currentContraption));
+    }
+    
+    public Rotation getRotationOfPistonContraption(PistonContraption contraption) {
+      return getRotation(ReflectionUtils.getRestrictedField(contraption, "orientation", Direction.class));
+    }
+  
+    protected static Rotation getRotation(Direction direction) {
+      return Rotation.values()[direction.get2DDataValue()];
     }
   
   }
