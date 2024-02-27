@@ -53,7 +53,7 @@ public class PatternSchematicWorld extends SchematicWorld {
     sourceBounds = template.getBoundingBox(SchematicItem.getSettings(blueprint), anchor);
   }
   
-  //TODO : Remove by release, i don't think ill need this ever
+  //TODO : Remove by release, i don't think ill need this, like ever
 //  public boolean setCloneBlock(BlockPos pos, BlockState state, int i) {
 //    AtomicBoolean result = new AtomicBoolean(false);
 //    System.out.println(pos);
