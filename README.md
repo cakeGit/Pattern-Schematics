@@ -4,3 +4,5 @@
 Put these on deployers for infinite infastructure!
 
 Or use them to plan out a pretty new factory floor,
+
+Adds a pattern schematic, just like the normal one, but a special pink!, then, place it in the world and have fun!
