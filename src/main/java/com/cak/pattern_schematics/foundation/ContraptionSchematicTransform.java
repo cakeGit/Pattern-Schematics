@@ -2,6 +2,7 @@ package com.cak.pattern_schematics.foundation;
 
 import com.cak.pattern_schematics.foundation.mirror.PatternSchematicWorld;
 import com.cak.pattern_schematics.foundation.util.ReflectionUtils;
+import com.cak.pattern_schematics.foundation.util.Vec3iUtils;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.piston.PistonContraption;
 import net.minecraft.core.BlockPos;
@@ -59,16 +60,19 @@ public class ContraptionSchematicTransform<T extends Contraption> {
   }
   
   public Vec3i getSourceLengths(T currentContraption, PatternSchematicWorld patternSchematicWorld) {
-    return patternSchematicWorld.getBounds().getLength();
+    System.out.println("up to date");
+    return Vec3iUtils.abs(patternSchematicWorld.getBounds().getLength()).offset(1, 1, 1);
   }
   
   public BlockPos applyRealToSourcePosition(T currentContraption, PatternSchematicWorld patternSchematicWorld, BlockPos position) {
     Vec3i length = getSourceLengths(currentContraption, patternSchematicWorld);
+    System.out.println(length);
+    // ok so like seperate out the clamp pos stuff
     return new BlockPos(
         repeatingBounds(position.getX(), length.getX()),
         repeatingBounds(position.getY(), length.getY()),
         repeatingBounds(position.getZ(), length.getZ())
-    );
+    ).offset(new Vec3i(patternSchematicWorld.getBounds().minX(), patternSchematicWorld.getBounds().minY(), patternSchematicWorld.getBounds().minZ()));
   }
   
   @SuppressWarnings("unchecked cast") //Type is already checked
@@ -104,8 +108,8 @@ public class ContraptionSchematicTransform<T extends Contraption> {
   
     @Override
     public Vec3i getSourceLengths(PistonContraption currentContraption, PatternSchematicWorld patternSchematicWorld) {
-      return new BlockPos(super.getSourceLengths(currentContraption, patternSchematicWorld))
-          .rotate(getRotationOfPistonContraption(currentContraption));
+      return Vec3iUtils.abs(new BlockPos(super.getSourceLengths(currentContraption, patternSchematicWorld))
+          .rotate(getRotationOfPistonContraption(currentContraption)));
     }
     @Override
     public BlockState modifyState(PistonContraption currentContraption, BlockState blockState, BlockPos position, LevelAccessor level) {

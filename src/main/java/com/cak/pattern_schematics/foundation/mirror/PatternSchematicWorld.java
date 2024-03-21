@@ -15,7 +15,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -77,7 +79,7 @@ public class PatternSchematicWorld extends SchematicWorld {
   
   @Override
   public BlockState getBlockState(BlockPos globalPos) {
-    return Blocks.DIRT.defaultBlockState();
+    return (blocks.containsKey(globalPos) ? blocks.get(globalPos) : Blocks.DIRT.defaultBlockState());
   }
   protected Entity cloneEntity(Entity source) {
     CompoundTag tag = new CompoundTag();
@@ -106,14 +108,43 @@ public class PatternSchematicWorld extends SchematicWorld {
     }
   }
   
-  @Override
-  public BoundingBox getBounds() {
-    Vec3i lengths = sourceBounds.getLength().offset(1, 1, 1);
-  
-    Vec3i minBounds = Vec3iUtils.multiplyVec3i(lengths, cloneScaleMin);
-    Vec3i maxBounds = Vec3iUtils.multiplyVec3i(lengths, cloneScaleMax.offset(1, 1, 1));
-
-    return BoundingBox.fromCorners(minBounds, maxBounds);
+  public BoundingBox genBounds(BoundingBox originalBounds, StructurePlaceSettings placeSettings) {
+//    // HSould probably be absed d off fht  from the stucrtut e place settingf sbut  i c  bbb aaaaaaaaaaaaaaaaaaaaaaaaaa
+//    System.out.println("bounds1" + originalBounds);
+//    //originalBounds = Vec3iUtils.rotate(originalBounds, placeSettings.getRotation());
+//    Vec3i lengths = originalBounds.getLength();
+//    System.out.println("bounds2" + originalBounds);
+//    System.out.println("rot" + placeSettings.getRotation());
+//
+//    // the issue is is that th lengths is fucked ig , cause it sitn get rotate i try fix but code bad and no work ig o think
+//
+//    Vec3i minScale = cloneScaleMin;
+//    Vec3i maxScale = cloneScaleMax;
+//
+//    Vec3i scale1 = new BlockPos(minScale).rotate(placeSettings.getRotation());
+//    Vec3i scale2 = new BlockPos(maxScale).rotate(placeSettings.getRotation());
+//    minScale = Vec3iUtils.min(scale1, scale2);
+//    maxScale = Vec3iUtils.max(scale1, scale2);
+//    System.out.println("lens2" + lengths);
+//    lengths = Vec3iUtils.abs(new BlockPos(lengths).rotate(placeSettings.getRotation()));
+//    System.out.println("lens" +  lengths);
+//
+//
+//    BoundingBox returnedBounds = new BoundingBox(originalBounds.minX(), originalBounds.minY(), originalBounds.minZ(), originalBounds.maxX(), originalBounds.maxY(), originalBounds.maxZ());
+//
+//    for (int x = minScale.getX(); x <= maxScale.getX(); x++) {
+//      for (int y = minScale.getY(); y <= maxScale.getY(); y++) {
+//        for (int z = minScale.getZ(); z <= maxScale.getZ(); z++) {
+//          Vec3i offset = Vec3iUtils.multiplyVec3i(lengths, new Vec3i(x, y, z));
+//          System.out.println(offset);
+//          returnedBounds.encapsulate(originalBounds.moved(offset.getX(), offset.getY(), offset.getZ()));
+//        }
+//      }
+//    }
+//    System.out.println(returnedBounds);
+//    return returnedBounds;
+    System.out.println(originalBounds);
+    return originalBounds;
   }
   
   /**This should only really be used for working at creation, use {@link ContraptionSchematicTransform} for active contraptions if thats needed*/

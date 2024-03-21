@@ -72,7 +72,7 @@ public class DeployerMovementBehaviorMixin {
   }
   
   private BlockState transformBlock(BlockState blockState) {
-    System.out.println(blockState.getBlock());
+    //System.out.println(blockState.getBlock());
     if (blockState == null)
       return null;
     currentContraptionSchematicTransform = ContraptionSchematicTransform.Handlers.get(currentContraption);
@@ -89,12 +89,14 @@ public class DeployerMovementBehaviorMixin {
       
       globalPos = currentContraptionSchematicTransform.castModifyPos(
           currentContraption,
-          globalPos.subtract(patternSchematicWorld.anchor)
-      ).offset(patternSchematicWorld.anchor);
+          globalPos.subtract(currentContraption.anchor)
+      ).offset(currentContraption.anchor);
   
+      System.out.println(globalPos);
+      
       return currentContraptionSchematicTransform.castApplyRealToSourcePosition(
-          currentContraption, patternSchematicWorld, globalPos.subtract(patternSchematicWorld.anchor)
-      ).offset(patternSchematicWorld.anchor);
+          currentContraption, patternSchematicWorld, globalPos
+      );
       
     }
     return globalPos;

@@ -11,6 +11,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.objectweb.asm.Opcodes;
@@ -66,13 +67,24 @@ public class SchematicPrinterMixin {
 //      return size;
 //  }
   
+  ServerLevelAccessor lastWorld;
+  StructurePlaceSettings lastPlaceSettings;
+  
   @Redirect(method = "loadSchematic", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate;placeInWorld(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructurePlaceSettings;Lnet/minecraft/util/RandomSource;I)Z"))
   private boolean loadSchem(StructureTemplate instance, ServerLevelAccessor world,
                             BlockPos blockPos1, BlockPos blockPos2, StructurePlaceSettings placeSettings,
                             RandomSource randomSource, int i) {
+    lastWorld = world;
+    lastPlaceSettings = placeSettings;
     if (world instanceof PatternSchematicWorld patternSchematicWorld) {
       Vec3i minScale = patternSchematicWorld.cloneScaleMin;
       Vec3i maxScale = patternSchematicWorld.cloneScaleMax;
+  
+      Vec3i scale1 = new BlockPos(minScale).rotate(placeSettings.getRotation());
+      Vec3i scale2 = new BlockPos(maxScale).rotate(placeSettings.getRotation());
+      
+      minScale = Vec3iUtils.min(scale1, scale2);
+      maxScale = Vec3iUtils.max(scale1, scale2);
       
       int k = 0;
       for (int x = minScale.getX(); x <= maxScale.getX(); x++) {
@@ -90,6 +102,15 @@ public class SchematicPrinterMixin {
       return true;
     }
     return instance.placeInWorld(world, blockPos1, blockPos2, placeSettings, randomSource, i);
+  }
+  
+  @Redirect(method = "loadSchematic", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/foundation/utility/BBHelper;encapsulate(Lnet/minecraft/world/level/levelgen/structure/BoundingBox;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/levelgen/structure/BoundingBox;"))
+  private BoundingBox loadSchem(BoundingBox bb, BlockPos pos) {
+    if (lastWorld instanceof PatternSchematicWorld patternSchematicWorld) {
+      return patternSchematicWorld.genBounds(bb, lastPlaceSettings);
+    }
+    
+    return bb;
   }
   
 }
