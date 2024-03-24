@@ -77,10 +77,6 @@ public class PatternSchematicWorld extends SchematicWorld {
     });
   }
   
-  @Override
-  public BlockState getBlockState(BlockPos globalPos) {
-    return (blocks.containsKey(globalPos) ? blocks.get(globalPos) : Blocks.DIRT.defaultBlockState());
-  }
   protected Entity cloneEntity(Entity source) {
     CompoundTag tag = new CompoundTag();
     source.save(tag);

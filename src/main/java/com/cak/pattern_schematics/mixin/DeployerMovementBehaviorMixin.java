@@ -60,7 +60,8 @@ public class DeployerMovementBehaviorMixin {
   
   @Redirect(method = "activateAsSchematicPrinter", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/content/schematics/SchematicWorld;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
   public BlockState getBlockState(SchematicWorld instance, BlockPos globalPos) {
-    return transformBlock(instance.getBlockState(modifyPos(globalPos, instance)));
+    System.out.println(transformBlock(instance.getBlockState(modifyPos(globalPos, instance))));
+    return transformBlock(instance.getBlockState(modifyPos(globalPos, instance).offset(instance.anchor)));
   }
   
   @Redirect(method = "activateAsSchematicPrinter", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/content/schematics/SchematicWorld;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;"))

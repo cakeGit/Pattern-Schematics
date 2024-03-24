@@ -4,13 +4,15 @@ import com.cak.pattern_schematics.foundation.mirror.PatternSchematicWorld;
 import com.cak.pattern_schematics.foundation.util.ReflectionUtils;
 import com.cak.pattern_schematics.foundation.util.Vec3iUtils;
 import com.simibubi.create.content.contraptions.Contraption;
-import com.simibubi.create.content.contraptions.piston.PistonContraption;
+import com.simibubi.create.content.trains.entity.CarriageContraption;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +24,7 @@ public class ContraptionSchematicTransform<T extends Contraption> {
     public static ContraptionSchematicTransform<Contraption> NONE = new ContraptionSchematicTransform<>(Contraption.class);
     
     public static List<ContraptionSchematicTransform<?>> handlers = List.of(
-        new ContraptionSchematicTransform.PistonContraptionTransform()
+        new CarriageContraptionTransform()
     );
   
     @SuppressWarnings("unchecked cast") //Type is already checked
@@ -60,19 +62,20 @@ public class ContraptionSchematicTransform<T extends Contraption> {
   }
   
   public Vec3i getSourceLengths(T currentContraption, PatternSchematicWorld patternSchematicWorld) {
-    System.out.println("up to date");
     return Vec3iUtils.abs(patternSchematicWorld.getBounds().getLength()).offset(1, 1, 1);
   }
   
-  public BlockPos applyRealToSourcePosition(T currentContraption, PatternSchematicWorld patternSchematicWorld, BlockPos position) {
-    Vec3i length = getSourceLengths(currentContraption, patternSchematicWorld);
-    System.out.println(length);
-    // ok so like seperate out the clamp pos stuff
+  public BoundingBox getBounds(PatternSchematicWorld patternSchematicWorld) {
+    return patternSchematicWorld.getBounds();
+  }
+  
+  public BlockPos mapPositionToRepeatingBounds(T currentContraption, PatternSchematicWorld patternSchematicWorld, BlockPos position) {
+    BoundingBox box = getBounds(patternSchematicWorld);
     return new BlockPos(
-        repeatingBounds(position.getX(), length.getX()),
-        repeatingBounds(position.getY(), length.getY()),
-        repeatingBounds(position.getZ(), length.getZ())
-    ).offset(new Vec3i(patternSchematicWorld.getBounds().minX(), patternSchematicWorld.getBounds().minY(), patternSchematicWorld.getBounds().minZ()));
+        repeatingBounds(position.getX(), box.minX(), box.maxX()),
+        repeatingBounds(position.getY(), box.minY(), box.maxY()),
+        repeatingBounds(position.getZ(), box.minZ(), box.maxZ())
+    );
   }
   
   @SuppressWarnings("unchecked cast") //Type is already checked
@@ -87,38 +90,55 @@ public class ContraptionSchematicTransform<T extends Contraption> {
   
   @SuppressWarnings("unchecked cast") //Type is already checked
   public BlockPos castApplyRealToSourcePosition(Contraption currentContraption, PatternSchematicWorld patternSchematicWorld, BlockPos position) {
-    return applyRealToSourcePosition((T) currentContraption, patternSchematicWorld, position);
+    System.out.println(mapPositionToRepeatingBounds((T) currentContraption, patternSchematicWorld, position));
+    return mapPositionToRepeatingBounds((T) currentContraption, patternSchematicWorld, position);
   }
   
-  /**Mod behaves not as needed when below 0*/
-  private int repeatingBounds(int source, int length) {
-    return (length + (source % length)) % length;
+  private int repeatingBounds(int source, int min, int max) {
+    return (Math.floorMod(source, (max-min)+1) + min);
   }
   
-  public static class PistonContraptionTransform extends ContraptionSchematicTransform<PistonContraption> {
+  public static class CarriageContraptionTransform extends ContraptionSchematicTransform<CarriageContraption> {
   
-    public PistonContraptionTransform() {
-      super(PistonContraption.class);
+    public CarriageContraptionTransform() {
+      super(CarriageContraption.class);
     }
   
     @Override
-    public BlockPos modifyPos(PistonContraption currentContraption, BlockPos globalPos) {
-      return globalPos.rotate(getRotationOfPistonContraption(currentContraption));
+    public BlockPos modifyPos(CarriageContraption currentContraption, BlockPos globalPos) {
+      return globalPos.rotate(getRotationOfTrainContraption(currentContraption));
     }
   
     @Override
-    public Vec3i getSourceLengths(PistonContraption currentContraption, PatternSchematicWorld patternSchematicWorld) {
+    public Vec3i getSourceLengths(CarriageContraption currentContraption, PatternSchematicWorld patternSchematicWorld) {
       return Vec3iUtils.abs(new BlockPos(super.getSourceLengths(currentContraption, patternSchematicWorld))
-          .rotate(getRotationOfPistonContraption(currentContraption)));
+          .rotate(getRotationOfTrainContraption(currentContraption)));
     }
     @Override
-    public BlockState modifyState(PistonContraption currentContraption, BlockState blockState, BlockPos position, LevelAccessor level) {
+    public BlockState modifyState(CarriageContraption currentContraption, BlockState blockState, BlockPos position, LevelAccessor level) {
       return super.modifyState(currentContraption, blockState, position, level)
-          .rotate(level, position, getRotationOfPistonContraption(currentContraption));
+          .rotate(level, position, getRotationOfTrainContraption(currentContraption));
     }
     
-    public Rotation getRotationOfPistonContraption(PistonContraption contraption) {
-      return getRotation(ReflectionUtils.getRestrictedField(contraption, "orientation", Direction.class));
+    public boolean inRange(double a, double b, double range) {
+      double dist = range / 2f;
+      return b >= a-dist && b <= a + dist;
+    }
+    
+    public Rotation getRotationOfAngle(double radians) {
+      for (Rotation rotation : Rotation.values())
+        if (inRange(rotation.ordinal() * (Math.PI/2), radians, Math.PI/2))
+          return rotation;
+      System.out.println("a");
+      return Rotation.NONE;
+    }
+    
+    public Rotation getRotationOfTrainContraption(CarriageContraption contraption) {
+      Vec3 orientation = contraption.entity.applyRotation(new Vec3(1, 0, 0), 1f);
+  
+      Rotation rotation = getRotationOfAngle(Math.atan2(orientation.x, orientation.z));
+      
+      return rotation;
     }
   
     protected static Rotation getRotation(Direction direction) {
