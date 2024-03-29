@@ -60,25 +60,27 @@ public class DeployerMovementBehaviorMixin {
   
   @Redirect(method = "activateAsSchematicPrinter", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/content/schematics/SchematicWorld;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
   public BlockState getBlockState(SchematicWorld instance, BlockPos globalPos) {
-    System.out.println(transformBlock(instance.getBlockState(modifyPos(globalPos, instance))));
-    return transformBlock(instance.getBlockState(modifyPos(globalPos, instance).offset(instance.anchor)));
+    if (instance instanceof PatternSchematicWorld patternSchematicWorld)
+      return transformBlock(instance.getBlockState(modifyPos(globalPos, instance).offset(instance.anchor)), patternSchematicWorld);
+    else return instance.getBlockState(globalPos);
   }
   
   @Redirect(method = "activateAsSchematicPrinter", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/content/schematics/SchematicWorld;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;"))
   public BlockEntity getBlockEntity(SchematicWorld instance, BlockPos globalPos) {
     BlockEntity blockEntity = instance.getBlockEntity(modifyPos(globalPos, instance));
-    if (blockEntity != null)
-      blockEntity.setBlockState(transformBlock(blockEntity.getBlockState()));
+    if (instance instanceof PatternSchematicWorld patternSchematicWorld)
+      if (blockEntity != null)
+        blockEntity.setBlockState(transformBlock(blockEntity.getBlockState(), patternSchematicWorld));
     return blockEntity;
   }
   
-  private BlockState transformBlock(BlockState blockState) {
+  private BlockState transformBlock(BlockState blockState, PatternSchematicWorld patternSchematicWorld) {
     //System.out.println(blockState.getBlock());
     if (blockState == null)
       return null;
     currentContraptionSchematicTransform = ContraptionSchematicTransform.Handlers.get(currentContraption);
     if (currentContraptionSchematicTransform != null) {
-      blockState = currentContraptionSchematicTransform.castModifyState(currentContraption, blockState, currentBlockPos, currentLevel);
+      blockState = currentContraptionSchematicTransform.castModifyState(currentContraption, patternSchematicWorld, blockState, currentBlockPos, currentLevel);
     }
     return blockState;
   }
@@ -89,9 +91,9 @@ public class DeployerMovementBehaviorMixin {
       currentContraptionSchematicTransform = ContraptionSchematicTransform.Handlers.get(currentContraption);
       
       globalPos = currentContraptionSchematicTransform.castModifyPos(
-          currentContraption,
+          currentContraption, patternSchematicWorld,
           globalPos.subtract(currentContraption.anchor)
-      ).offset(currentContraption.anchor);
+      ).offset(currentContraption.anchor).offset(-1, -1, -1);
   
       System.out.println(globalPos);
       

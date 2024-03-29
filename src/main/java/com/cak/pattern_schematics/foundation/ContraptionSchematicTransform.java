@@ -53,11 +53,11 @@ public class ContraptionSchematicTransform<T extends Contraption> {
     return target;
   }
   
-  public BlockPos modifyPos(T currentContraption, BlockPos globalPos) {
+  public BlockPos modifyPos(T currentContraption, PatternSchematicWorld patternSchematicWorld, BlockPos globalPos) {
     return globalPos;
   }
   
-  public BlockState modifyState(T currentContraption, BlockState blockState, BlockPos position, LevelAccessor level) {
+  public BlockState modifyState(T currentContraption, PatternSchematicWorld patternSchematicWorld, BlockState blockState, BlockPos position, LevelAccessor level) {
     return blockState;
   }
   
@@ -79,13 +79,13 @@ public class ContraptionSchematicTransform<T extends Contraption> {
   }
   
   @SuppressWarnings("unchecked cast") //Type is already checked
-  public BlockPos castModifyPos(Contraption currentContraption, BlockPos globalPos) {
-    return modifyPos((T) currentContraption, globalPos);
+  public BlockPos castModifyPos(Contraption currentContraption, PatternSchematicWorld patternSchematicWorld, BlockPos globalPos) {
+    return modifyPos((T) currentContraption, patternSchematicWorld, globalPos);
   }
   
   @SuppressWarnings("unchecked cast") //Type is already checked
-  public BlockState castModifyState(Contraption currentContraption, BlockState blockState, BlockPos pos, LevelAccessor level) {
-    return modifyState((T) currentContraption, blockState, pos, level);
+  public BlockState castModifyState(Contraption currentContraption, PatternSchematicWorld patternSchematicWorld, BlockState blockState, BlockPos pos, LevelAccessor level) {
+    return modifyState((T) currentContraption, patternSchematicWorld, blockState, pos, level);
   }
   
   @SuppressWarnings("unchecked cast") //Type is already checked
@@ -105,7 +105,7 @@ public class ContraptionSchematicTransform<T extends Contraption> {
     }
   
     @Override
-    public BlockPos modifyPos(CarriageContraption currentContraption, BlockPos globalPos) {
+    public BlockPos modifyPos(CarriageContraption currentContraption, PatternSchematicWorld patternSchematicWorld, BlockPos globalPos) {
       return globalPos.rotate(getRotationOfTrainContraption(currentContraption));
     }
   
@@ -115,8 +115,8 @@ public class ContraptionSchematicTransform<T extends Contraption> {
           .rotate(getRotationOfTrainContraption(currentContraption)));
     }
     @Override
-    public BlockState modifyState(CarriageContraption currentContraption, BlockState blockState, BlockPos position, LevelAccessor level) {
-      return super.modifyState(currentContraption, blockState, position, level)
+    public BlockState modifyState(CarriageContraption currentContraption, PatternSchematicWorld patternSchematicWorld, BlockState blockState, BlockPos position, LevelAccessor level) {
+      return super.modifyState(currentContraption, patternSchematicWorld, blockState, position, level)
           .rotate(level, position, getRotationOfTrainContraption(currentContraption));
     }
     
