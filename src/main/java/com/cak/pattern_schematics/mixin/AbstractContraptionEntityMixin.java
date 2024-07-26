@@ -1,6 +1,6 @@
 package com.cak.pattern_schematics.mixin;
 
-import com.cak.pattern_schematics.foundation.ContraptionSchematicTransform;
+import com.cak.pattern_schematics.foundation.schematic_transforms.ContraptionSchematicTransform;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.Contraption;
 import net.minecraft.world.entity.Entity;

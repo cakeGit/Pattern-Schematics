@@ -1,26 +1,22 @@
 package com.cak.pattern_schematics.mixin;
 
-import com.cak.pattern_schematics.foundation.ContraptionSchematicTransform;
+import com.cak.pattern_schematics.foundation.schematic_transforms.ContraptionSchematicTransform;
 import com.cak.pattern_schematics.foundation.mirror.PatternSchematicWorld;
 import com.cak.pattern_schematics.registry.PatternSchematicsItems;
-import com.simibubi.create.CreateClient;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.content.kinetics.deployer.DeployerFakePlayer;
 import com.simibubi.create.content.kinetics.deployer.DeployerMovementBehaviour;
 import com.simibubi.create.content.schematics.SchematicItem;
 import com.simibubi.create.content.schematics.SchematicWorld;
-import com.simibubi.create.foundation.utility.Color;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
