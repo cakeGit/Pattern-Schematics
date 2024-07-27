@@ -1,6 +1,5 @@
 package com.cak.pattern_schematics.foundation.mirror;
 
-import com.cak.pattern_schematics.foundation.schematic_transforms.ContraptionSchematicTransform;
 import com.cak.pattern_schematics.foundation.util.Vec3iUtils;
 import com.simibubi.create.content.schematics.SchematicChunkSource;
 import com.simibubi.create.content.schematics.SchematicItem;
