@@ -50,22 +50,18 @@ public class SchematicTableMenuMixin extends MenuBase<SchematicTableBlockEntity>
   }
   
   @Shadow
-  @Override
   protected SchematicTableBlockEntity createOnClient(FriendlyByteBuf extraData) { return null; }
   
   @Shadow
-  @Override
   protected void initAndReadInventory(SchematicTableBlockEntity contentHolder) { }
   
   @Shadow
-  @Override
   protected void addSlots() { }
   
   @Shadow
-  @Override
   protected void saveData(SchematicTableBlockEntity contentHolder) { }
   
-  @Override
-  public ItemStack quickMoveStack(Player p_38941_, int p_38942_) { return null; }
+  @Shadow
+  public ItemStack quickMoveStack(Player playerIn, int index) {return null;}
   
 }
