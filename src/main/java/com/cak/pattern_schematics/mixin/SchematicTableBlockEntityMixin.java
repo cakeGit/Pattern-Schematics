@@ -51,7 +51,6 @@ public class SchematicTableBlockEntityMixin extends SmartBlockEntity implements 
   }
   
   @Shadow
-  @Override
   public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
   
   }
