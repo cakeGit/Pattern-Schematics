@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class StructureTemplateMixin {
 
   
-  @Redirect(method = "placeInWorld", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/level/ServerLevelAccessor;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
+  @Redirect(method = "placeInWorld", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/level/ServerLevelAccessor;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z", remap = true))
   private boolean setBlock(ServerLevelAccessor instance, BlockPos pos, BlockState state, int i) {
 //    if (instance instanceof PatternSchematicWorld patternSchematicWorld)
 //      return patternSchematicWorld.setCloneBlock(pos, state, i);

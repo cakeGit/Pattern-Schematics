@@ -70,7 +70,7 @@ public class SchematicPrinterMixin {
   ServerLevelAccessor lastWorld;
   StructurePlaceSettings lastPlaceSettings;
   
-  @Redirect(method = "loadSchematic", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate;placeInWorld(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructurePlaceSettings;Lnet/minecraft/util/RandomSource;I)Z"))
+  @Redirect(method = "loadSchematic", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate;placeInWorld(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructurePlaceSettings;Lnet/minecraft/util/RandomSource;I)Z", remap = true))
   private boolean loadSchem(StructureTemplate instance, ServerLevelAccessor world,
                             BlockPos blockPos1, BlockPos blockPos2, StructurePlaceSettings placeSettings,
                             RandomSource randomSource, int i) {

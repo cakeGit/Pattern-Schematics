@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(value = SchematicTableMenu.class, remap = false)
 public class SchematicTableMenuMixin extends MenuBase<SchematicTableBlockEntity> implements SchematicTableMenuMixinAccessor {
   
-  @Shadow(remap = false)
+  @Shadow
   private Slot inputSlot;
   
   @Override
@@ -49,23 +49,22 @@ public class SchematicTableMenuMixin extends MenuBase<SchematicTableBlockEntity>
     });
   }
   
-  @Shadow(remap = false)
+  @Shadow
   @Override
   protected SchematicTableBlockEntity createOnClient(FriendlyByteBuf extraData) { return null; }
   
-  @Shadow(remap = false)
+  @Shadow
   @Override
   protected void initAndReadInventory(SchematicTableBlockEntity contentHolder) { }
   
-  @Shadow(remap = false)
+  @Shadow
   @Override
   protected void addSlots() { }
   
-  @Shadow(remap = false)
+  @Shadow
   @Override
   protected void saveData(SchematicTableBlockEntity contentHolder) { }
   
-  @Shadow(remap = false)
   @Override
   public ItemStack quickMoveStack(Player p_38941_, int p_38942_) { return null; }
   

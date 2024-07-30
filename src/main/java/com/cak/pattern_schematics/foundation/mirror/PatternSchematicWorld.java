@@ -1,6 +1,5 @@
 package com.cak.pattern_schematics.foundation.mirror;
 
-import com.cak.pattern_schematics.foundation.ContraptionSchematicTransform;
 import com.cak.pattern_schematics.foundation.util.Vec3iUtils;
 import com.simibubi.create.content.schematics.SchematicChunkSource;
 import com.simibubi.create.content.schematics.SchematicItem;
@@ -12,12 +11,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
